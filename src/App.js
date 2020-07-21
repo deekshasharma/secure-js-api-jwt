@@ -67,6 +67,7 @@ function Users() {
     </div>
 }
 
+//TODO: URL should not be hard coded
 function MyFavorite() {
     const [favBooks, setFavBooks] = useState([]);
 
