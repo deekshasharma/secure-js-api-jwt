@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-    res.send({user1: "User1", user2: "User2"});
+    res.send([{fName: "Deeksha", lastName: "Sharma"}, {fName: "Amy", lastName: "Robinson"}]);
 });
 
 app.get('/about', (req, res) => {

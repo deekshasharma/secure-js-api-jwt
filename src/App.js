@@ -4,9 +4,6 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 
 export default function App() {
-
-
-
   return (
     <div className="App">
       <Router>
@@ -30,6 +27,8 @@ function Home() {
   return <h2>INFO</h2>;
 }
 
+
+
 function About() {
   const [data, setData] = useState({aboutUs: ""});
   getDataFromBackend("http://localhost:5000/about")
@@ -38,8 +37,22 @@ function About() {
   return <h2>{data.aboutUs}</h2>;
 }
 
+
+
+
 function Users() {
-  return <h2>INFO</h2>;
+  const [users, setUsers] = useState([]);
+  getDataFromBackend("http://localhost:5000/users")
+      .then(result => setUsers([...result]));
+
+  return <div>
+  {users.map((user, key) => {
+    return<h2 key={key}>
+    {user.fName+ " "+ user.lastName}
+    </h2>
+  })}
+  </div>
+
 }
 
 export const getDataFromBackend = async(endpoint) => {
