@@ -8,8 +8,8 @@ export default function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route path="/about">
-            <About />
+          <Route path="/books">
+            <Books />
           </Route>
           <Route path="/users">
             <Users />
@@ -29,14 +29,23 @@ function Home() {
 
 
 
-function About() {
-  const [data, setData] = useState({aboutUs: ""});
+function Books() {
+  const [collection, setCollection] = useState([]);
   useEffect(() => {
-    getDataFromBackend("http://localhost:5000/about")
-        .then(result => setData({aboutUs: result.aboutUs}));
+    getDataFromBackend("http://localhost:5000/books")
+        .then(result => {
+          const allBooks = result.bookCollection;
+          setCollection([...allBooks])
+        });
 
   }, []);
-  return <h2>{data.aboutUs}</h2>;
+  return <div>
+    {collection.map((book, key) => {
+      return <h2 key={key}>
+        {book.name} by {book.author}
+      </h2>
+    })}
+  </div>;
 }
 
 
@@ -56,7 +65,6 @@ function Users() {
     </h2>
   })}
   </div>
-
 }
 
 export const getDataFromBackend = async(endpoint) => {
