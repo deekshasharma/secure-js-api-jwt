@@ -35,18 +35,14 @@ app.get('/favorite/:id', (req, res) => {
     jsonfile.readFile(users)
         .then(allUsers => allUsers.filter(user => user.id === req.params.id)[0]['favorite'])
         .then(favBookIds => {
-            let allBooks = [];
-            const favoriteBooks = [];
             jsonfile.readFile(inventory)
-                .then(books => allBooks = books)
-                .then(() => {
-                    favBookIds.map(id => favoriteBooks.push(allBooks.filter(book => id === book.id)[0]);
-                    return favoriteBooks;
-                })
-                .then(favoriteBooks => {
-                    res.send({favoriteBooks: favoriteBooks})
+                .then(books => books)
+                .then((books) => {
+                    const favoriteBooks = [];
+                    favBookIds.map(id => favoriteBooks.push(books.filter(book => id === book.id)[0]));
+                    res.send({favorites: favoriteBooks})
                 })
                 .catch(error => console.log("Cannot retrieve inventory ", error.message));
         })
-        .catch(err => console.log("Cannot read users ",err.message))
+        .catch(err => console.log("Cannot read users ", err.message))
 });
