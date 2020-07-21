@@ -20,25 +20,33 @@ app.get('/', (req, res) => {
 app.get('/users', (req, res) => {
     jsonfile.readFile(users)
         .then(allUsers => res.send(allUsers))
-        .catch(err => console.log(err.message));
+        .catch(error => console.log(error.message));
 });
 
 app.get('/books', (req, res) => {
     jsonfile.readFile(inventory)
         .then(books => res.send({bookCollection: books}))
-        .catch(error => console.error(error));
+        .catch(error => console.error(error.message));
 
 });
+
 
 app.get('/favorite/:id', (req, res) => {
-    const userMatch = users.filter(user => user.id === req.params.id)[0];
-    const favoriteBooks = [];
-    userMatch.favorite.map(bookId => {
-        const matchingBook = getMatchingBook(bookId);
-        favoriteBooks.push(matchingBook);
-    });
-    res.send({favoriteBooks: favoriteBooks});
+    jsonfile.readFile(users)
+        .then(allUsers => allUsers.filter(user => user.id === req.params.id)[0]['favorite'])
+        .then(favBookIds => {
+            let allBooks = [];
+            const favoriteBooks = [];
+            jsonfile.readFile(inventory)
+                .then(books => allBooks = books)
+                .then(() => {
+                    favBookIds.map(id => favoriteBooks.push(allBooks.filter(book => id === book.id)[0]);
+                    return favoriteBooks;
+                })
+                .then(favoriteBooks => {
+                    res.send({favoriteBooks: favoriteBooks})
+                })
+                .catch(error => console.log("Cannot retrieve inventory ", error.message));
+        })
+        .catch(err => console.log("Cannot read users ",err.message))
 });
-
-
-const getMatchingBook = (bookId) => books.filter(book => bookId === book.id)[0];
