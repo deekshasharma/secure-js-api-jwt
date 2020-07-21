@@ -14,6 +14,9 @@ export default function App() {
           <Route path="/users">
             <Users />
           </Route>
+          <Route exact path="/favorite/:id">
+            <MyFavorite />
+          </Route>
           <Route path="/">
             <Home />
           </Route>
@@ -24,7 +27,7 @@ export default function App() {
 }
 
 function Home() {
-  return <h2>INFO</h2>;
+  return <h2>Welcome this is Home!</h2>;
 }
 
 
@@ -64,6 +67,24 @@ function Users() {
     {user.fName+ " "+ user.lastName}
     </h2>
   })}
+  </div>
+}
+
+function MyFavorite(){
+  const [favBooks, setFavBooks] = useState([]);
+
+  useEffect(() => {
+    getDataFromBackend("http://localhost:5000/favorite/f2775f38-92fc-42e5-98a5-b137a0887a40")
+        .then(result => setFavBooks(result.favoriteBooks));
+  });
+
+  return <div>
+    <h1>YOUR FAVORITE BOOKS</h1>
+    {favBooks.map((book, key) => {
+      return<h3 key={key}>
+        {book.name+ " by "+ book.author}
+      </h3>
+    })}
   </div>
 }
 

@@ -13,33 +13,52 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-    res.send([{fName: "Deeksha", lastName: "Sharma"}, {fName: "Amy", lastName: "Robinson"}]);
+    res.send([{fName: "Deeksha", lastName: "Sharma", favorite: ["1234455jeler", "7943854kejer"]}, {fName: "Amy", lastName: "Robinson", favorite: ["5467364754dfjk"]}]);
 });
 
 app.get('/books', (req, res) => {
     res.send({bookCollection: books})
 });
 
+app.get('/favorite/:id', (req, res) => {
+    const userMatch = users.filter(user => user.id === req.params.id)[0];
+    const favoriteBooks = [];
+        userMatch.favorite.map(bookId => {
+            const matchingBook = getMatchingBook(bookId);
+            favoriteBooks.push(matchingBook);
+    });
+    res.send({favoriteBooks: favoriteBooks});
+});
+
+
+const getMatchingBook = (bookId) => books.filter(book => bookId === book.id)[0];
+
+
 const books = [
     {
-        id: "1234455jeler",
+        id: "6cc12b5e-cb5e-11ea-87d0-0242ac130003",
         name: "Surrounded by idiots",
         author: "Thomas Erikson"
     },
     {
-        id: "68324jkfhe",
+        id: "722f584a-cb5e-11ea-87d0-0242ac130003",
         name: "Stillness is the key",
         author: "Ryan Holiday"
     },
     {
-        id: "7943854kejer",
+        id: "765384e6-cb5e-11ea-87d0-0242ac130003",
         name: "Sapiens:A Brief History of Humankind",
         author: "Yuval Noah Harari"
     },
     {
-        id: "5467364754dfjk",
+        id: "7a4fe9ea-cb5e-11ea-87d0-0242ac130003",
         name: "Principles for Success",
         author: "Ray Dalio"
     },
 
-]
+];
+
+const users = [
+    {id: "f2775f38-92fc-42e5-98a5-b137a0887a40",fName: "Deeksha", lastName: "Sharma", favorite: ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"], role: "user"},
+    {id: "677c96e2-cb5e-11ea-87d0-0242ac130003", fName: "Amy", lastName: "Robinson", favorite: ["5467364754dfjk"], role: "admin"}
+];
