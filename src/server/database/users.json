@@ -1,0 +1,16 @@
+[
+  {
+    "id": "f2775f38-92fc-42e5-98a5-b137a0887a40",
+    "fName": "Deeksha",
+    "lastName": "Sharma",
+    "favorite": ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"],
+    "role": "user"
+  },
+  {
+    "id": "677c96e2-cb5e-11ea-87d0-0242ac130003",
+    "fName": "Amy",
+    "lastName": "Robinson",
+    "favorite": ["5467364754dfjk"],
+    "role": "admin"
+  }
+]
