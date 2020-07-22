@@ -17,6 +17,9 @@ export default function App() {
                     <Route exact path="/favorite/:id">
                         <MyFavorite/>
                     </Route>
+                    <Route exact path="/book">
+                        <MyFavorite/>
+                    </Route>
                     <Route path="/">
                         <Home/>
                     </Route>
