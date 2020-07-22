@@ -74,7 +74,7 @@ function MyFavorite() {
     useEffect(() => {
         getDataFromBackend("http://localhost:5000/favorite/f2775f38-92fc-42e5-98a5-b137a0887a40")
             .then(result => setFavBooks(result.favorites));
-    });
+    },[]);
 
     return <div>
         <h1>YOUR FAVORITE BOOKS</h1>
