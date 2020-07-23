@@ -41,15 +41,13 @@ app.post('/login', (req, res) => {
         .then(allUsers => {
             if (allUsers.filter(user => (user.username === username) && user.password === password).length === 1)
                 res.status(200).send({message: "Success! user found"});
-            else res.status(403).send({message: "Phew!! User Not Found"});
+            else res.status(403).send({message: "Phew!! User Not found"});
         })
-        .catch(error => console.log(error.message));
-
+        .catch(error => console.log("Error logging to the app ",error.message));
 });
 
 
 app.get('/favorite/:id', (req, res) => {
-    console.log("Inside Favorite API");
     jsonfile.readFile(users)
         .then(allUsers => allUsers.filter(user => user.id === req.params.id)[0]['favorite'])
         .then(favBookIds => {
