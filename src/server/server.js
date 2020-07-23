@@ -2,6 +2,8 @@ const express = require('express');
 const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 
 const inventory = './database/books.json';
 const users = './database/users.json';
@@ -50,7 +52,12 @@ app.post('/login', (req, res) => {
             bcrypt.compare(password, user.key)
                 .then((result) => {
                     if (!result) res.status(403).send({message: "Either username or password is incorrect"});
-                    else res.status(200).send({message: "Welcome to your account and view books"});
+                    else {
+                        res.status(200).send({
+                            message: "Welcome!",
+                            token: generateToken(user.username, user.role)
+                        })
+                    }
                 });
         })
         .catch(error => console.log("Error logging to the app ", error.message));
@@ -89,4 +96,23 @@ app.post('/book', (req, res) => {
         .catch(error => console.error(error.message));
     res.send({message: "OK"})
 });
+
+const MEMBER_AUDIENCE = ['SHOW_FAVORITE', 'LOGOUT', 'LOGIN', 'SHOW_BOOKS'];
+const ADMIN_AUDIENCE = ['SHOW_FAVORITE', 'LOGOUT', 'LOGIN', 'SHOW_BOOKS', 'ADD_BOOK', 'SHOW_USERS'];
+const ISSUER = "BOOKIE_ORG";
+const EXPIRY = 120;
+const SECRET = ")x2f-l-opsnd)w!!z2m7ykvony99pt@6@6m+=q2uk3%w8*7$ow";
+
+const generateToken = (username, role) => {
+    const payload = {data: username};
+
+    const options = {
+        algorithm: 'HS256',
+        expiresIn: EXPIRY,
+        issuer: ISSUER,
+        audience: role === "admin" ? ADMIN_AUDIENCE : MEMBER_AUDIENCE,
+        subject: username
+    };
+    return jwt.sign(payload, SECRET, options);
+}
 
