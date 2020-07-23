@@ -32,9 +32,24 @@ app.get('/books', (req, res) => {
 
 });
 
+app.post('/login', (req, res) => {
+    let base64Encoding = req.headers.authorization.split(" ")[1];
+    let credentials = (Buffer.from(base64Encoding,  "base64").toString().split(":"));
+    const username = credentials[0];
+    const password = credentials[1];
+    jsonfile.readFile(users)
+        .then(allUsers => {
+            if (allUsers.filter(user => (user.username === username) && user.password === password).length === 1)
+                res.status(200).send({message: "Success! user found"});
+            else res.status(403).send({message: "Phew!! User Not Found"});
+        })
+        .catch(error => console.log(error.message));
+
+});
+
 
 app.get('/favorite/:id', (req, res) => {
-    console.log("Inside Favorite API")
+    console.log("Inside Favorite API");
     jsonfile.readFile(users)
         .then(allUsers => allUsers.filter(user => user.id === req.params.id)[0]['favorite'])
         .then(favBookIds => {
