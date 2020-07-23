@@ -1,9 +1,11 @@
 const express = require('express');
 const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
+const bcrypt = require('bcrypt');
 
 const inventory = './database/books.json';
 const users = './database/users.json';
+const saltRounds = 10;
 
 
 const app = express();
@@ -34,16 +36,25 @@ app.get('/books', (req, res) => {
 
 app.post('/login', (req, res) => {
     let base64Encoding = req.headers.authorization.split(" ")[1];
-    let credentials = (Buffer.from(base64Encoding,  "base64").toString().split(":"));
+    let credentials = (Buffer.from(base64Encoding, "base64").toString().split(":"));
     const username = credentials[0];
     const password = credentials[1];
+
     jsonfile.readFile(users)
         .then(allUsers => {
-            if (allUsers.filter(user => (user.username === username) && user.password === password).length === 1)
-                res.status(200).send({message: "Success! user found"});
-            else res.status(403).send({message: "Phew!! User Not found"});
+            const filteredUserArray = allUsers.filter(user => (user.username === username));
+            let user = filteredUserArray.length === 0 ? {} : filteredUserArray[0];
+            if (!user) res.status(403).send({message: "Either username or password is incorrect"});
+            else return user;
         })
-        .catch(error => console.log("Error logging to the app ",error.message));
+        .then((user) => {
+            bcrypt.compare(password, user.key)
+                .then((result) => {
+                    if (!result) res.status(403).send({message: "Either username or password is incorrect"});
+                    else res.status(200).send({message: "Welcome to your account and view books"});
+                });
+        })
+        .catch(error => console.log("Error logging to the app ", error.message));
 });
 
 

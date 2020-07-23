@@ -2,7 +2,7 @@
   {
     "id": "f2775f38-92fc-42e5-98a5-b137a0887a40",
     "username": "deeksha30",
-    "password": "kdje89#$%",
+    "key": "$2b$10$ph9/OK1lN/.9KzkeGKGPK.bxOkqJ2b9A2AqH/5iPkS7dmqAnUn.vi",
     "fName": "Deeksha",
     "lastName": "Sharma",
     "favorite": ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"],
@@ -12,7 +12,7 @@
     "id": "677c96e2-cb5e-11ea-87d0-0242ac130003",
     "fName": "Amy",
     "username": "zenmade23",
-    "password": "728193kfej**(",
+    "key": "$2b$10$ruGV.xw6P0zuPUa0vt694eLO5LwckcxFZ1NfzdzDQKF12E2240vZy",
     "lastName": "Robinson",
     "favorite": ["722f584a-cb5e-11ea-87d0-0242ac130003"],
     "role": "admin"
