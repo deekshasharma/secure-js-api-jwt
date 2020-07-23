@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 
 const inventory = './database/books.json';
 const users = './database/users.json';
-const saltRounds = 10;
 
 
 const app = express();
