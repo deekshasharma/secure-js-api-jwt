@@ -4,17 +4,15 @@ const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Constants = require('./constants');
+const getUserDetails = require('./shared');
 
 const inventory = './database/books.json';
 const users = './database/users.json';
-
-
 const app = express();
 const port = process.env.PORT || 5000;
-var cors = require('cors');
+const cors = require('cors');
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
-
 app.use(cors());
 app.use(express.json());
 
@@ -55,14 +53,12 @@ app.post('/login', (req, res) => {
     const username = credentials[0];
     const password = credentials[1];
 
-    jsonfile.readFile(users)
-        .then(allUsers => {
-            const filteredUserArray = allUsers.filter(user => (user.username === username));
-            let user = filteredUserArray.length === 0 ? {} : filteredUserArray[0];
+    getUserDetails(username)
+        .then(user => {
             if (!user) res.status(403).send({message: "Either username or password is incorrect"});
             else return user;
         })
-        .then((user) => {
+        .then(user => {
             bcrypt.compare(password, user.key)
                 .then((result) => {
                     if (!result) res.status(403).send({message: "Either username or password is incorrect"});
@@ -74,7 +70,7 @@ app.post('/login', (req, res) => {
                     }
                 });
         })
-        .catch(error => console.log("Error logging to the app ", error.message));
+        .catch(error => console.log("Error logging to the app ", error.message))
 });
 
 
