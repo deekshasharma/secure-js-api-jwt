@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Constants = require('./constants');
 
-
 const inventory = './database/books.json';
 const users = './database/users.json';
 
@@ -29,26 +28,23 @@ app.get('/users', (req, res) => {
         .catch(error => console.log(error.message));
 });
 
+
 app.get('/books', verifyToken, (req, res) => {
-    // if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
-    // else {
-    //     console.log("request ayi")
-    //     jsonfile.readFile(inventory)
-    //         .then(books => res.send({bookCollection: books}))
-    //         .catch(error => console.error(error.message));
-    //     // const token = req.headers.authorization.split(" ")[1];
-    //     // const token = req.headers.authorization;
-    //     // console.log(token);
-    // }
+    const decodedToken = jwt.decode(req.headers.authorization.split(" ")[1]);
+    if (decodedToken['aud'].includes(Constants.SHOW_BOOKS)) {
+        jsonfile.readFile(inventory)
+            .then(books => res.send({bookCollection: books}))
+            .catch(error => console.error(error.message));
+    } else res.status(401).send({message: "Cannot view books"});
 });
 
 function verifyToken(req, res, next) {
     if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
     else {
         const token = req.headers.authorization.split(" ")[1];
-        jwt.verify(token, Constants.JWT_OPTIONS.SECRET, {expiresIn: Constants.JWT_OPTIONS.EXPIRY}, function (err, decode) {
+        jwt.verify(token, Constants.JWT_OPTIONS.SECRET, function (err, decode) {
             if (err) res.status(401).send({message: "Please login again! Your session has expired"});
-            else {res.send({message: "hello"})}
+            else next();
         })
     }
 }
