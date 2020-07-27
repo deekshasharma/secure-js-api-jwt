@@ -21,3 +21,14 @@ exports.generateToken = (username, role) => {
     };
     return jwt.sign(payload, Constants.JWT_OPTIONS.SECRET, options);
 };
+
+exports. verifyToken = (req, res, next) => {
+    if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
+    else {
+        const token = req.headers.authorization.split(" ")[1];
+        jwt.verify(token, Constants.JWT_OPTIONS.SECRET, function (err, decode) {
+            if (err) res.status(401).send({message: "Please login again! Your session has expired"});
+            else next();
+        })
+    }
+};
