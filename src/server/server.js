@@ -1,4 +1,4 @@
-require('dotenv').config({path: '../../dev.env'});
+require('dotenv').config({path: './variables.env'});
 const express = require('express');
 const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
