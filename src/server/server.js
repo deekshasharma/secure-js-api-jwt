@@ -91,15 +91,18 @@ app.get('/favorite/:id', verifyToken, (req, res) => {
 //TODO: Sanitize data before saving to DB.
 //TODO: Mention in the script if there is more data(books), it's better to use a data store. We are reading all books in memory and then replacing them.
 app.post('/book', verifyToken, (req, res) => {
-    let book = req.body;
-    book.id = uuid();
-    jsonfile.readFile(inventory)
-        .then(books => {
-            books.push(book);
-            jsonfile.writeFile(inventory, books, (err) => {
-                if (err) console.log(err.message);
+    if (isAPIAccessAllowed(req.headers.authorization,Constants.SHOW_USERS )) {
+        let book = req.body;
+        book.id = uuid();
+        jsonfile.readFile(inventory)
+            .then(books => {
+                books.push(book);
+                jsonfile.writeFile(inventory, books, (err) => {
+                    if (err) console.log(err.message);
+                })
             })
-        })
-        .catch(error => console.error(error.message));
-    res.send({message: "OK"})
+            .catch(error => console.error(error.message));
+        res.send({message: "OK"})
+    }
+    else res.status(401).send({message: "Sorry! Only admin can add a book"})
 });
