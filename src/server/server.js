@@ -60,7 +60,6 @@ app.post('/login', (req, res) => {
                     if (!result) res.status(403).send({message: "Either username or password is incorrect"});
                     else {
                         res.status(200).send({
-                            message: "Welcome!",
                             access_token: generateToken(user.username, user.role),
                             token_type: "JWT",
                             expires_in: "1h"
