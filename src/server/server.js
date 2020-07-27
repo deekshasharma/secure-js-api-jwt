@@ -66,7 +66,6 @@ app.post('/login', (req, res) => {
         .catch(error => console.log("Error logging to the app ", error.message))
 });
 
-//TODO: Verify if the incoming request has access to this API. Both members and admin should be able to access
 app.get('/favorite/:id', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_FAVORITE)) {
         jsonfile.readFile(users)
@@ -86,13 +85,11 @@ app.get('/favorite/:id', verifyToken, (req, res) => {
 
 });
 
-//TODO: Make sure the client sets the value of Content-Type as "application/json"
-//TODO: Sanitize data before saving to DB.
-//TODO: Mention in the script if there is more data(books), it's better to use a data store. We are reading all books in memory and then replacing them.
+//TODO: Make sure the client sets the value of Content-Type as "application/json" and handle HTTP 400 BAD request
+//TODO: If there is more data(books), it's better to use a data store. We are reading all books in memory and then replacing them.
 app.post('/book', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.ADD_BOOK)) {
-        let book = req.body;
-        book.id = uuid();
+        let book = { name: req.body.name, author: req.body.author, id: uuid()};
         jsonfile.readFile(inventory)
             .then(books => {
                 books.push(book);
