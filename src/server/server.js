@@ -2,7 +2,6 @@ const express = require('express');
 const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const Constants = require('./constants');
 const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed} = require('./shared');
 
@@ -21,7 +20,6 @@ app.get('/', (req, res) => {
     res.send({message: 'Welcome to our Home '});
 });
 
-//TODO: Verify if the incoming request has access to this API.
 app.get('/users', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
         jsonfile.readFile(users)
@@ -31,7 +29,6 @@ app.get('/users', verifyToken, (req, res) => {
 
 });
 
-//TODO: Verify if the incoming request has access to this API. Both members and admin should be able to access
 app.get('/books', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
         jsonfile.readFile(inventory)
@@ -84,8 +81,7 @@ app.get('/favorite/:id', verifyToken, (req, res) => {
                     .catch(error => console.log("Cannot retrieve inventory ", error.message));
             })
             .catch(err => console.log("Cannot read users ", err.message))
-    }
-    else res.status(403).send({message: "You cannot view favorite books"});
+    } else res.status(403).send({message: "You cannot view favorite books"});
 
 });
 
