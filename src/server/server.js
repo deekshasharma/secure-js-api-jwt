@@ -4,7 +4,8 @@ const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Constants = require('./constants');
-const getUserDetails = require('./shared');
+const {getUserDetails, generateToken} = require('./shared');
+
 
 const inventory = './database/books.json';
 const users = './database/users.json';
@@ -20,13 +21,14 @@ app.get('/', (req, res) => {
     res.send({message: 'Welcome to our Home '});
 });
 
-app.get('/users', (req, res) => {
+//TODO: Verify if the incoming request has access to this API.
+app.get('/users', verifyToken, (req, res) => {
     jsonfile.readFile(users)
         .then(allUsers => res.send(allUsers))
         .catch(error => console.log(error.message));
 });
 
-
+//TODO: Verify if the incoming request has access to this API. Both members and admin should be able to access
 app.get('/books', verifyToken, (req, res) => {
     const decodedToken = jwt.decode(req.headers.authorization.split(" ")[1]);
     if (decodedToken['aud'].includes(Constants.SHOW_BOOKS)) {
@@ -65,7 +67,9 @@ app.post('/login', (req, res) => {
                     else {
                         res.status(200).send({
                             message: "Welcome!",
-                            token: generateToken(user.username, user.role)
+                            access_token: generateToken(user.username, user.role),
+                            token_type: "JWT",
+                            expires_in: "1h"
                         })
                     }
                 });
@@ -73,8 +77,8 @@ app.post('/login', (req, res) => {
         .catch(error => console.log("Error logging to the app ", error.message))
 });
 
-
-app.get('/favorite/:id', (req, res) => {
+//TODO: Verify if the incoming request has access to this API. Both members and admin should be able to access
+app.get('/favorite/:id', verifyToken, (req, res) => {
     jsonfile.readFile(users)
         .then(allUsers => allUsers.filter(user => user.id === req.params.id)[0]['favorite'])
         .then(favBookIds => {
@@ -93,7 +97,7 @@ app.get('/favorite/:id', (req, res) => {
 //TODO: Make sure the client sets the value of Content-Type as "application/json"
 //TODO: Sanitize data before saving to DB.
 //TODO: Mention in the script if there is more data(books), it's better to use a data store. We are reading all books in memory and then replacing them.
-app.post('/book', (req, res) => {
+app.post('/book', verifyToken, (req, res) => {
     let book = req.body;
     book.id = uuid();
     jsonfile.readFile(inventory)
@@ -106,17 +110,3 @@ app.post('/book', (req, res) => {
         .catch(error => console.error(error.message));
     res.send({message: "OK"})
 });
-
-
-const generateToken = (username, role) => {
-    const payload = {data: username};
-    const options = {
-        algorithm: Constants.JWT_OPTIONS.ALGORITHM,
-        expiresIn: Constants.JWT_OPTIONS.EXPIRY,
-        issuer: Constants.JWT_OPTIONS.ISSUER,
-        audience: role === "admin" ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
-        subject: username
-    };
-    return jwt.sign(payload, Constants.JWT_OPTIONS.SECRET, options);
-};
-
