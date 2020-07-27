@@ -4,7 +4,7 @@ const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed} = require('./shared');
+const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, constructUsers} = require('./shared');
 
 
 const inventory = './database/books.json';
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 app.get('/users', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
         jsonfile.readFile(users)
-            .then(allUsers => res.send(allUsers))
+            .then(allUsers => res.send(constructUsers(allUsers)))
             .catch(error => console.log(error.message));
     } else res.status(401).send({message: "You cannot view users, only admin user can."})
 
@@ -33,7 +33,17 @@ app.get('/users', verifyToken, (req, res) => {
 app.get('/books', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
         jsonfile.readFile(inventory)
-            .then(books => res.send({bookCollection: books}))
+            .then(books => {
+                const userName = decodeTokenAndGetUser(req.headers.authorization);
+                getUserDetails(userName).then(user => {
+                    res.status(200).send({
+                        access_token: generateToken(user.username, user.role),
+                        token_type: "JWT",
+                        expires_in: "1h",
+                        bookCollection: books
+                    })
+                });
+            })
             .catch(error => console.error(error.message));
     } else res.status(401).send({message: "Cannot view books"});
 });
@@ -89,7 +99,7 @@ app.get('/favorite/:id', verifyToken, (req, res) => {
 //TODO: If there is more data(books), it's better to use a data store. We are reading all books in memory and then replacing them.
 app.post('/book', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.ADD_BOOK)) {
-        let book = { name: req.body.name, author: req.body.author, id: uuid()};
+        let book = {name: req.body.name, author: req.body.author, id: uuid()};
         jsonfile.readFile(inventory)
             .then(books => {
                 books.push(book);

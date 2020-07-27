@@ -2,6 +2,7 @@ const jsonfile = require('jsonfile');
 const users = './database/users.json';
 const Constants = require('./constants');
 const jwt = require('jsonwebtoken');
+const inventory = './database/books.json';
 
 
 exports.getUserDetails = async function getUserDetails(userName) {
@@ -26,7 +27,7 @@ exports.verifyToken = (req, res, next) => {
     if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
     else {
         const token = req.headers.authorization.split(" ")[1];
-        jwt.verify(token, Constants.JWT_OPTIONS.SECRET, function (err, decode) {
+        jwt.verify(token, process.env.SECRET, function (err, decode) {
             if (err) res.status(401).send({message: "Please login again! Your session has expired"});
             else next();
         })
@@ -36,4 +37,29 @@ exports.verifyToken = (req, res, next) => {
 exports.isAPIAccessAllowed = (token, apiName) => {
     const decodedToken = jwt.decode(token.split(" ")[1]);
     return (decodedToken['aud'].includes(apiName));
+};
+
+exports.decodeTokenAndGetUser = (authHeader) => {
+    const token = authHeader.split(" ")[1];
+    return jwt.decode(token)['sub'];
+};
+
+exports.constructUsers = (users) => {
+    let allUsers = [];
+    users.map(user => {
+        const userObject = {
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            favoriteBooks: getBooks(user.favorite),
+        };
+        allUsers.push(userObject)
+    });
+    return allUsers;
+};
+
+const getBooks = (bookIds) => {
+    const allBooks = jsonfile.readFileSync(inventory);
+    return allBooks.filter(book => bookIds.indexOf(book.id) !== -1);
 };
