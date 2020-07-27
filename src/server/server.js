@@ -4,7 +4,7 @@ const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken} = require('./shared');
+const {getUserDetails, generateToken, verifyToken,isAPIAccessAllowed} = require('./shared');
 
 
 const inventory = './database/books.json';
@@ -23,9 +23,13 @@ app.get('/', (req, res) => {
 
 //TODO: Verify if the incoming request has access to this API.
 app.get('/users', verifyToken, (req, res) => {
-    jsonfile.readFile(users)
-        .then(allUsers => res.send(allUsers))
-        .catch(error => console.log(error.message));
+    if (isAPIAccessAllowed(req.headers.authorization,Constants.SHOW_USERS )) {
+        jsonfile.readFile(users)
+            .then(allUsers => res.send(allUsers))
+            .catch(error => console.log(error.message));
+    }
+    else res.status(401).send({message: "You cannot view users, only admin user can."})
+
 });
 
 //TODO: Verify if the incoming request has access to this API. Both members and admin should be able to access

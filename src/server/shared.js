@@ -22,7 +22,7 @@ exports.generateToken = (username, role) => {
     return jwt.sign(payload, Constants.JWT_OPTIONS.SECRET, options);
 };
 
-exports. verifyToken = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
     if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
     else {
         const token = req.headers.authorization.split(" ")[1];
@@ -31,4 +31,9 @@ exports. verifyToken = (req, res, next) => {
             else next();
         })
     }
+};
+
+exports.isAPIAccessAllowed = (token, apiName) => {
+    const decodedToken = jwt.decode(token.split(" ")[1]);
+    return (decodedToken['aud'].includes(apiName));
 };
