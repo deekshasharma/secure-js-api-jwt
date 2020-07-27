@@ -13,13 +13,13 @@ exports.getUserDetails = async function getUserDetails(userName) {
 exports.generateToken = (username, role) => {
     const payload = {data: username};
     const options = {
-        algorithm: Constants.JWT_OPTIONS.ALGORITHM,
-        expiresIn: Constants.JWT_OPTIONS.EXPIRY,
-        issuer: Constants.JWT_OPTIONS.ISSUER,
+        algorithm: process.env.ALGORITHM,
+        expiresIn: process.env.EXPIRY,
+        issuer: process.env.ISSUER,
         audience: role === "admin" ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
         subject: username
     };
-    return jwt.sign(payload, Constants.JWT_OPTIONS.SECRET, options);
+    return jwt.sign(payload, process.env.SECRET, options);
 };
 
 exports.verifyToken = (req, res, next) => {
