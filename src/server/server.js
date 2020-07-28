@@ -3,7 +3,7 @@ const express = require('express');
 const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks} = require('./shared');
+const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks} = require('./shared');
 
 
 const inventory = './database/books.json';
