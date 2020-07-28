@@ -21,15 +21,6 @@ app.get('/', (req, res) => {
     res.send({message: 'Welcome to our Home '});
 });
 
-// app.get('/users', verifyToken, (req, res) => {
-//     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
-//         jsonfile.readFile(users)
-//             .then(allUsers => res.send(constructUsers(allUsers)))
-//             .catch(error => console.log(error.message));
-//     } else res.status(401).send({message: "You cannot view users, only admin user can."})
-//
-// });
-
 app.get('/users', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
         const subject = decodeTokenAndGetUser(req.headers.authorization);

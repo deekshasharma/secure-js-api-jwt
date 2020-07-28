@@ -44,27 +44,6 @@ exports.decodeTokenAndGetUser = (authHeader) => {
     return jwt.decode(token)['sub'];
 };
 
-// exports.constructUsers = (users) => {
-//     let allUsers = [];
-//     users.map(user => {
-//         const userObject = {
-//             username: user.username,
-//             firstName: user.firstName,
-//             lastName: user.lastName,
-//             role: user.role,
-//             favoriteBooks: getBooks(user.favorite),
-//         };
-//         allUsers.push(userObject)
-//     });
-//     return allUsers;
-// };
-//
-// const getBooks = (bookIds) => {
-//     const allBooks = jsonfile.readFileSync(inventory);
-//     return allBooks.filter(book => bookIds.indexOf(book.id) !== -1);
-// };
-
-
 exports.getAllUsers = async function () {
     const allUsers = await jsonfile.readFile(users);
     let updatedUsers = [];
