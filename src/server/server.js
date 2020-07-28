@@ -22,16 +22,11 @@ app.get('/', (req, res) => {
 
 app.get('/users', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
-        const subject = decodeTokenAndGetUser(req.headers.authorization);
-        getUserDetails(subject).then(user => {
-            getAllUsers()
-                .then(users => res.status(200).send({
-                    access_token: generateToken(user.username, user.role),
-                    token_type: process.env.TOKEN_TYPE,
-                    expires_in: process.env.EXPIRY,
-                    users: users,
-                }));
-        })
+        getAllUsers()
+            .then(users => {
+                constructTokenResponse(req.headers.authorization, null)
+                    .then(tokenRes => res.status(200).send(Object.assign(tokenRes, {users: users})))
+            }).catch(error => console.error("Error retrieving users ", error.message));
     } else res.status(401).send({message: "You cannot view users, only admin user can."})
 });
 
@@ -41,7 +36,7 @@ app.get('/books', verifyToken, (req, res) => {
         getAllBooks()
             .then(books => {
                 constructTokenResponse(req.headers.authorization, null)
-                    .then((tokenRes) => res.send(Object.assign(tokenRes, {books: books})))
+                    .then((tokenRes) => res.status(200).send(Object.assign(tokenRes, {books: books})))
             })
             .catch(error => console.error("Error retrieving books ", error.message));
     } else res.status(401).send({message: "Cannot view books"});
