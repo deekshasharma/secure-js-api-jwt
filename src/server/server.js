@@ -3,7 +3,7 @@ const express = require('express');
 const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, addBook, constructTokenResponse, isCredentialValid} = require('./shared');
+const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks} = require('./shared');
 
 
 const inventory = './database/books.json';
@@ -38,19 +38,12 @@ app.get('/users', verifyToken, (req, res) => {
 
 app.get('/books', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
-        jsonfile.readFile(inventory)
+        getAllBooks()
             .then(books => {
-                const userName = decodeTokenAndGetUser(req.headers.authorization);
-                getUserDetails(userName).then(user => {
-                    res.status(200).send({
-                        access_token: generateToken(user.username, user.role),
-                        token_type: process.env.TOKEN_TYPE,
-                        expires_in: process.env.EXPIRY,
-                        bookCollection: books
-                    })
-                });
+                constructTokenResponse(req.headers.authorization, null)
+                    .then((tokenRes) => res.send(Object.assign(tokenRes, {books: books})))
             })
-            .catch(error => console.error(error.message));
+            .catch(error => console.error("Error retrieving books ", error.message));
     } else res.status(401).send({message: "Cannot view books"});
 });
 
