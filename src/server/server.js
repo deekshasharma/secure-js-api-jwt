@@ -4,7 +4,7 @@ const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, getAllBooks} = require('./shared');
+const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, addBook, constructTokenResponse} = require('./shared');
 
 
 const inventory = './database/books.json';
@@ -101,23 +101,15 @@ app.get('/favorite/:id', verifyToken, (req, res) => {
     } else res.status(403).send({message: "You cannot view favorite books"});
 });
 
-//TODO: Make sure the client sets the value of Content-Type as "application/json" and handle HTTP 400 BAD request
-//TODO: If there is more data(books), it's better to use a data store. We are reading all books in memory and then replacing them.
 app.post('/book', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.ADD_BOOK)) {
-        const subject = decodeTokenAndGetUser(req.headers.authorization);
-        getUserDetails(subject).then(user => {
-            getAllBooks().then(allBooks => {
-                allBooks.push({name: req.body.name, author: req.body.author, id: uuid()});
-                jsonfile.writeFile(inventory, allBooks, (err) => {
-                    if (err) console.log("Error adding book to inventory", err.message);
-                })
-            }).then(() => res.send({
-                access_token: generateToken(user.username, user.role),
-                token_type: process.env.TOKEN_TYPE,
-                expires_in: process.env.EXPIRY,
-                book: {name: req.body.name, author: req.body.author}
-            })).catch(err => console.log("Error reading books ", err))
-        }).catch(err => console.log("Cannot get user details ", err))
+        addBook({name: req.body.name, author: req.body.author, id: uuid()})
+            .then(err => {
+                if (err) console.log(err);
+                else {
+                    constructTokenResponse(req.headers.authorization).then(tokenRes => res.send(tokenRes))
+                }
+            })
     } else res.status(401).send({message: "Sorry! Only admin can add a book"})
 });
+

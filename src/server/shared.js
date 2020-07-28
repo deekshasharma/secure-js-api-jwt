@@ -4,14 +4,13 @@ const Constants = require('./constants');
 const jwt = require('jsonwebtoken');
 const inventory = './database/books.json';
 
-
-exports.getUserDetails = async function getUserDetails(userName) {
+getUserDetails = async function getUserDetails(userName) {
     const allUsers = await jsonfile.readFile(users);
     const filteredUserArray = allUsers.filter(user => (user.username === userName));
     return filteredUserArray.length === 0 ? {} : filteredUserArray[0];
 };
 
-exports.generateToken = (username, role) => {
+const generateToken = (username, role) => {
     const payload = {data: username};
     const options = {
         algorithm: process.env.ALGORITHM,
@@ -39,7 +38,7 @@ exports.isAPIAccessAllowed = (token, apiName) => {
     return (decodedToken['aud'].includes(apiName));
 };
 
-exports.decodeTokenAndGetUser = (authHeader) => {
+const decodeTokenAndGetUser = (authHeader) => {
     const token = authHeader.split(" ")[1];
     return jwt.decode(token)['sub'];
 };
@@ -60,4 +59,20 @@ exports.getAllUsers = async function () {
 
 exports.getAllBooks = async function () {
     return await jsonfile.readFile(inventory);
+};
+
+exports.addBook = async function (book) {
+    const allBooks = await jsonfile.readFile(inventory);
+    allBooks.push(book);
+    return await jsonfile.writeFile(inventory, allBooks);
+};
+
+exports.constructTokenResponse = async function (authHeader) {
+    const username = decodeTokenAndGetUser(authHeader);
+    const user = await getUserDetails(username);
+    return {
+        access_token: generateToken(user.username, user.role),
+        token_type: process.env.TOKEN_TYPE,
+        expires_in: process.env.EXPIRY,
+    }
 };
