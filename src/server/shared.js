@@ -57,3 +57,7 @@ exports.getAllUsers = async function () {
     });
     return updatedUsers;
 };
+
+exports.getAllBooks = async function () {
+    return await jsonfile.readFile(inventory);
+};
