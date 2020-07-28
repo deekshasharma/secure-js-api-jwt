@@ -4,7 +4,7 @@ const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, addBook, constructTokenResponse} = require('./shared');
+const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers, addBook, constructTokenResponse, isCredentialValid} = require('./shared');
 
 
 const inventory = './database/books.json';
@@ -56,31 +56,43 @@ app.get('/books', verifyToken, (req, res) => {
 });
 
 
+// app.post('/login', (req, res) => {
+//     let base64Encoding = req.headers.authorization.split(" ")[1];
+//     let credentials = (Buffer.from(base64Encoding, "base64").toString().split(":"));
+//     const username = credentials[0];
+//     const password = credentials[1];
+//
+//     getUserDetails(username)
+//         .then(user => {
+//             if (!user) res.status(403).send({message: "Either username or password is incorrect"});
+//             else return user;
+//         })
+//         .then(user => {
+//             bcrypt.compare(password, user.key)
+//                 .then((result) => {
+//                     if (!result) res.status(403).send({message: "Either username or password is incorrect"});
+//                     else {
+//                         res.status(200).send({
+//                             access_token: generateToken(user.username, user.role),
+//                             token_type: process.env.TOKEN_TYPE,
+//                             expires_in: process.env.EXPIRY
+//                         })
+//                     }
+//                 });
+//         })
+//         .catch(error => console.log("Error logging to the app ", error.message))
+// });
+
 app.post('/login', (req, res) => {
     let base64Encoding = req.headers.authorization.split(" ")[1];
     let credentials = (Buffer.from(base64Encoding, "base64").toString().split(":"));
     const username = credentials[0];
     const password = credentials[1];
-
-    getUserDetails(username)
-        .then(user => {
-            if (!user) res.status(403).send({message: "Either username or password is incorrect"});
-            else return user;
-        })
-        .then(user => {
-            bcrypt.compare(password, user.key)
-                .then((result) => {
-                    if (!result) res.status(403).send({message: "Either username or password is incorrect"});
-                    else {
-                        res.status(200).send({
-                            access_token: generateToken(user.username, user.role),
-                            token_type: process.env.TOKEN_TYPE,
-                            expires_in: process.env.EXPIRY
-                        })
-                    }
-                });
-        })
-        .catch(error => console.log("Error logging to the app ", error.message))
+    isCredentialValid(username, password)
+        .then(result => {
+            if (!result) res.status(403).send({message: "Either username or password is incorrect"});
+            else constructTokenResponse(null, username).then(tokenRes => res.send(tokenRes))
+        });
 });
 
 app.get('/favorite/:id', verifyToken, (req, res) => {

@@ -3,6 +3,8 @@ const users = './database/users.json';
 const Constants = require('./constants');
 const jwt = require('jsonwebtoken');
 const inventory = './database/books.json';
+const bcrypt = require('bcrypt');
+
 
 getUserDetails = async function getUserDetails(userName) {
     const allUsers = await jsonfile.readFile(users);
@@ -38,7 +40,7 @@ exports.isAPIAccessAllowed = (token, apiName) => {
     return (decodedToken['aud'].includes(apiName));
 };
 
-const decodeTokenAndGetUser = (authHeader) => {
+const getUsernameFromToken = (authHeader) => {
     const token = authHeader.split(" ")[1];
     return jwt.decode(token)['sub'];
 };
@@ -67,12 +69,20 @@ exports.addBook = async function (book) {
     return await jsonfile.writeFile(inventory, allBooks);
 };
 
-exports.constructTokenResponse = async function (authHeader) {
-    const username = decodeTokenAndGetUser(authHeader);
-    const user = await getUserDetails(username);
+exports.constructTokenResponse = async function (authHeader, userName) {
+    let name = userName || getUsernameFromToken(authHeader);
+    const user = await getUserDetails(name);
     return {
         access_token: generateToken(user.username, user.role),
         token_type: process.env.TOKEN_TYPE,
         expires_in: process.env.EXPIRY,
     }
+};
+
+exports.isCredentialValid = async function (username, password) {
+    const user = await getUserDetails(username);
+    if (user) {
+        return bcrypt.compare(password, user.key)
+            .then(result => result)
+    } else return false;
 };
