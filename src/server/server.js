@@ -4,7 +4,7 @@ const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const bcrypt = require('bcrypt');
 const Constants = require('./constants');
-const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, constructUsers} = require('./shared');
+const {getUserDetails, generateToken, verifyToken, isAPIAccessAllowed, decodeTokenAndGetUser, getAllUsers} = require('./shared');
 
 
 const inventory = './database/books.json';
@@ -21,14 +21,22 @@ app.get('/', (req, res) => {
     res.send({message: 'Welcome to our Home '});
 });
 
+// app.get('/users', verifyToken, (req, res) => {
+//     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
+//         jsonfile.readFile(users)
+//             .then(allUsers => res.send(constructUsers(allUsers)))
+//             .catch(error => console.log(error.message));
+//     } else res.status(401).send({message: "You cannot view users, only admin user can."})
+//
+// });
+
 app.get('/users', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
-        jsonfile.readFile(users)
-            .then(allUsers => res.send(constructUsers(allUsers)))
-            .catch(error => console.log(error.message));
+        getAllUsers().then( users => res.status(200).send({users: users}));
     } else res.status(401).send({message: "You cannot view users, only admin user can."})
 
 });
+
 
 app.get('/books', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
