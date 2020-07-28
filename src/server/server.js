@@ -32,9 +32,17 @@ app.get('/', (req, res) => {
 
 app.get('/users', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
-        getAllUsers().then( users => res.status(200).send({users: users}));
+        const subject = decodeTokenAndGetUser(req.headers.authorization);
+        getUserDetails(subject).then(user => {
+            getAllUsers()
+                .then(users => res.status(200).send({
+                    access_token: generateToken(user.username, user.role),
+                    token_type: process.env.TOKEN_TYPE,
+                    expires_in: process.env.EXPIRY,
+                    users: users,
+                }));
+        })
     } else res.status(401).send({message: "You cannot view users, only admin user can."})
-
 });
 
 
@@ -46,8 +54,8 @@ app.get('/books', verifyToken, (req, res) => {
                 getUserDetails(userName).then(user => {
                     res.status(200).send({
                         access_token: generateToken(user.username, user.role),
-                        token_type: "JWT",
-                        expires_in: "1h",
+                        token_type: process.env.TOKEN_TYPE,
+                        expires_in: process.env.EXPIRY,
                         bookCollection: books
                     })
                 });
@@ -100,7 +108,6 @@ app.get('/favorite/:id', verifyToken, (req, res) => {
             })
             .catch(err => console.log("Cannot read users ", err.message))
     } else res.status(403).send({message: "You cannot view favorite books"});
-
 });
 
 //TODO: Make sure the client sets the value of Content-Type as "application/json" and handle HTTP 400 BAD request
