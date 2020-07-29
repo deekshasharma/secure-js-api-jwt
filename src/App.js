@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {Home} from "./components/Home";
 
 //TODO: Token verification should be done
 
@@ -29,11 +30,6 @@ export default function App() {
         </div>
     );
 }
-
-function Home() {
-    return <h2>Welcome this is Home!</h2>;
-}
-
 
 function Books() {
     const [collection, setCollection] = useState([]);
