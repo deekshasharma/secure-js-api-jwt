@@ -3,6 +3,7 @@ import './styles.css';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Home} from "./components/Home";
 import {Books} from "./components/Books";
+import {Users} from "./components/Users";
 
 //TODO: Token verification should be done
 
@@ -64,21 +65,21 @@ export default function App() {
 // }
 
 
-function Users() {
-    const [users, setUsers] = useState([]);
-    useEffect(() => {
-        getDataFromBackend("http://localhost:5000/users")
-            .then(result => setUsers([...result]));
-    }, []);
-
-    return <div>
-        {users.map((user, key) => {
-            return <h2 key={key}>
-                {user.fName + " " + user.lastName}
-            </h2>
-        })}
-    </div>
-}
+// function Users() {
+//     const [users, setUsers] = useState([]);
+//     useEffect(() => {
+//         getDataFromBackend("http://localhost:5000/users")
+//             .then(result => setUsers([...result]));
+//     }, []);
+//
+//     return <div>
+//         {users.map((user, key) => {
+//             return <h2 key={key}>
+//                 {user.fName + " " + user.lastName}
+//             </h2>
+//         })}
+//     </div>
+// }
 
 //TODO: URL should not be hard coded
 function MyFavorite() {
