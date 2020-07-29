@@ -6,6 +6,14 @@ import {Home} from "./components/Home";
 //TODO: Token verification should be done
 
 export default function App() {
+    const [showLoginErr, setLoginError] = useState(false);
+
+    //TODO: For incorrect username and password, showLoginErr should be set to true
+    function onClickLogin (username, password) {
+        console.log(username);
+        console.log(password);
+    };
+
     return (
         <div className="App">
             <Router>
@@ -23,7 +31,7 @@ export default function App() {
                         <MyFavorite/>
                     </Route>
                     <Route path="/">
-                        <Home/>
+                        <Home onClickLogin={onClickLogin} showLoginErr={showLoginErr}/>
                     </Route>
                 </Switch>
             </Router>
