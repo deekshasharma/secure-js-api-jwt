@@ -15,12 +15,16 @@ export default function App() {
         console.log(password);
     };
 
+    function onAddFavorite(bookId){
+        console.log("Favorite book added ", bookId);
+    }
+
     return (
         <div className="App">
             <Router>
                 <Switch>
                     <Route path="/books">
-                        <Books/>
+                        <Books onAddFavorite={onAddFavorite}/>
                     </Route>
                     <Route path="/users">
                         <Users/>

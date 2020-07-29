@@ -2,16 +2,16 @@ import React from 'react';
 import {Grid, Typography, Paper, Button} from '@material-ui/core';
 import '../styles.css';
 
-export const Books = ({onClickFavorite}) => {
+export const Books = ({onAddFavorite}) => {
     return <Grid container className="Books">
         {books.map((book, key) => {
-            return <Book key={key} name={book.name} author={book.author} color={book.color}
-                         onClickFavorite={onClickFavorite}/>
+            return <Book key={key} name={book.name} id={book.id} author={book.author} color={book.color}
+                         onClick={onAddFavorite}/>
         })}
     </Grid>
 };
 
-const Book = ({name, id, author, onClickFavorite}) => {
+const Book = ({name, id, author, onClick}) => {
     return <Paper elevation={2} style={{padding: "2em", margin: "2em", border: "2px solid gray"}}>
         <Grid container direction="column">
             <Grid item xs={12}>
@@ -22,7 +22,7 @@ const Book = ({name, id, author, onClickFavorite}) => {
                 variant="contained"
                 color="primary"
                 size="small"
-                onClick={() => onClickFavorite(id)}
+                onClick={() => onClick(id)}
             >
                 ADD TO FAVORITES
             </Button>
