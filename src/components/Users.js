@@ -3,8 +3,8 @@ import {Grid, Typography, Avatar} from '@material-ui/core';
 import '../styles.css';
 
 export const Users = () => {
-    return <Grid container className="Books" justify="center">
-        <Grid item xs={5}>
+    return <Grid container className="Content" justify="center">
+        <Grid item xs={4}>
             {users.map((user, key) => {
                 return <User key={key}
                              userName={user.username}
@@ -18,10 +18,9 @@ export const Users = () => {
 };
 
 const User = ({firstName, lastName, userName, role}) => {
-    return <Grid container direction="column" alignItems="center"
-                 style={{border: "2px solid gray", padding: "1em", marginBottom: "2em", borderRadius: "10px"}}>
+    return <Grid container direction="column" alignItems="center" className="User">
         <Grid item xs={12}>
-            <Grid container justify="space-between" alignItems="center" style={{padding: "1em"}}>
+            <Grid container justify="space-between" alignItems="center" style={{padding: "0.7em"}}>
                 <Avatar style={{marginRight: "0.5em"}}>{firstName.charAt(0)}</Avatar>
                 <Typography variant="body2" gutterBottom>{userName + " (" + role + ") "}</Typography>
             </Grid>
@@ -32,6 +31,7 @@ const User = ({firstName, lastName, userName, role}) => {
     </Grid>
 };
 
+//TODO: Remove test data
 const users = [
     {
         "id": "f2775f38-92fc-42e5-98a5-b137a0887a40",

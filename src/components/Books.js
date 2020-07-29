@@ -3,7 +3,7 @@ import {Grid, Typography, Paper, Button} from '@material-ui/core';
 import '../styles.css';
 
 export const Books = ({onAddFavorite}) => {
-    return <Grid container className="Books">
+    return <Grid container className="Content">
         {books.map((book, key) => {
             return <Book key={key} name={book.name} id={book.id} author={book.author} color={book.color}
                          onClick={onAddFavorite}/>
@@ -12,7 +12,7 @@ export const Books = ({onAddFavorite}) => {
 };
 
 const Book = ({name, id, author, onClick}) => {
-    return <Paper elevation={2} style={{padding: "2em", margin: "2em", border: "2px solid gray"}}>
+    return <Paper elevation={2} className="Book">
         <Grid container direction="column">
             <Grid item xs={12}>
                 <Typography variant="h6">{name}</Typography>
@@ -30,6 +30,7 @@ const Book = ({name, id, author, onClick}) => {
     </Paper>
 };
 
+//TODO: Remove test data
 const books = [
     {
         "name": "Surrounded by idiots",
