@@ -1,0 +1,90 @@
+import React from 'react';
+import {Grid, Typography, Paper, Button} from '@material-ui/core';
+import '../styles.css';
+
+export const Books = ({onClickFavorite}) => {
+    return <Grid container className="Books">
+        {books.map((book, key) => {
+            return <Book key={key} name={book.name} author={book.author} color={book.color}
+                         onClickFavorite={onClickFavorite}/>
+        })}
+    </Grid>
+};
+
+const Book = ({name, id, author, onClickFavorite}) => {
+    return <Paper elevation={2} style={{padding: "2em", margin: "2em", border: "2px solid gray"}}>
+        <Grid container direction="column">
+            <Grid item xs={12}>
+                <Typography variant="h6">{name}</Typography>
+            </Grid>
+            <Typography variant="subtitle1" gutterBottom>{author}</Typography>
+            <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => onClickFavorite(id)}
+            >
+                ADD TO FAVORITES
+            </Button>
+        </Grid>
+    </Paper>
+};
+
+const books = [
+    {
+        "name": "Surrounded by idiots",
+        "author": "Thomas Erikson",
+    },
+    {
+        "name": "The Tipping Point",
+        "author": "Malcolm Gladwell",
+    },
+    {
+        "name": "Stillness is the key",
+        "author": "Ryan Holiday",
+    },
+    {
+        "name": "Being Mortal",
+        "author": "Atul Gawande",
+    },
+    {
+        "name": "Principles for Success",
+        "author": "Ray Dalio",
+    },
+    {
+        "id": "228877ef-e264-46a2-948f-5a28dd592322",
+        "name": "Digital Minimalisml",
+        "author": "Cal Newport"
+    },
+    {
+        "id": "19a36fd2-9823-4498-9ea2-261c549d806d",
+        "name": "The 1% Rule",
+        "author": "Tommy Baker"
+    },
+    {
+        "id": "79ebfeb6-eff0-4ea8-b4fd-92ca7dcebac4",
+        "name": "Into Thin Air",
+        "author": "Jon Krakauer"
+    },
+    {
+        "id": "6e19e4e7-b86b-4255-8b7e-d84d12d49f16",
+        "name": "Thinking Fast and Slow",
+        "author": "Daniel Kahneman"
+    },
+    {
+        "id": "90c9a136-0b40-40bc-9c93-ab44befe21ad",
+        "name": "Company of One",
+        "author": "Paul Jarvis"
+    },
+    {
+        "id": "1e3ba4f8-6ef7-4065-9240-abb67fe616c6",
+        "name": "Motivation Manifesto",
+        "author": "Brendon Burchard"
+    },
+    {
+        "id": "445c3cbc-8cf9-41e1-be55-6508a6a5c374",
+        "name": "Disrupt You!",
+        "author": "Jay Samit"
+    }
+];
+

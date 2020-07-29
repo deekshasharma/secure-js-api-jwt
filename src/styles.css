@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+
+.Books {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20vh;
+  margin-top: 5vh;
+}

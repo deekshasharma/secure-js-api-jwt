@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import './App.css';
+import './styles.css';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Home} from "./components/Home";
+import {Books} from "./components/Books";
 
 //TODO: Token verification should be done
 
@@ -39,24 +40,24 @@ export default function App() {
     );
 }
 
-function Books() {
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
-        getDataFromBackend("http://localhost:5000/books")
-            .then(result => {
-                const allBooks = result.bookCollection;
-                setCollection([...allBooks])
-            });
-
-    }, []);
-    return <div>
-        {collection.map((book, key) => {
-            return <h2 key={key}>
-                {book.name} by {book.author}
-            </h2>
-        })}
-    </div>;
-}
+// function Books() {
+//     const [collection, setCollection] = useState([]);
+//     useEffect(() => {
+//         getDataFromBackend("http://localhost:5000/books")
+//             .then(result => {
+//                 const allBooks = result.bookCollection;
+//                 setCollection([...allBooks])
+//             });
+//
+//     }, []);
+//     return <div>
+//         {collection.map((book, key) => {
+//             return <h2 key={key}>
+//                 {book.name} by {book.author}
+//             </h2>
+//         })}
+//     </div>;
+// }
 
 
 function Users() {
