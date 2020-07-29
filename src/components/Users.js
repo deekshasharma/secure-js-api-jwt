@@ -1,12 +1,15 @@
 import React from 'react';
-import {Grid, Typography, Paper, Butto, Avatar} from '@material-ui/core';
+import {Grid, Typography, Avatar} from '@material-ui/core';
 import '../styles.css';
 
 export const Users = () => {
     return <Grid container className="Books" justify="center">
-        <Grid item xs={6}>
+        <Grid item xs={5}>
             {users.map((user, key) => {
-                return <User key={key} userName={user.username} firstName={user.firstName} lastName={user.lastName}
+                return <User key={key}
+                             userName={user.username}
+                             firstName={user.firstName}
+                             lastName={user.lastName}
                              role={user.role}/>
             })
             }
@@ -15,15 +18,16 @@ export const Users = () => {
 };
 
 const User = ({firstName, lastName, userName, role}) => {
-    return <Grid container direction="column" alignItems="center" style={{border: "2px solid blue", padding: "1em", marginBottom: "2em"}}>
+    return <Grid container direction="column" alignItems="center"
+                 style={{border: "2px solid gray", padding: "1em", marginBottom: "2em", borderRadius: "10px"}}>
         <Grid item xs={12}>
-            <Grid container alignItems="center" style={{border: "2px solid red"}}>
-                <Avatar>{firstName.charAt(0)}</Avatar>
+            <Grid container justify="space-between" alignItems="center" style={{padding: "1em"}}>
+                <Avatar style={{marginRight: "0.5em"}}>{firstName.charAt(0)}</Avatar>
                 <Typography variant="body2" gutterBottom>{userName + " (" + role + ") "}</Typography>
             </Grid>
         </Grid>
         <Grid item>
-            <Typography variant="subtitle1" gutterBottom>{firstName + " " + lastName}</Typography>
+            <Typography variant="h6" gutterBottom color="primary">{firstName + " " + lastName}</Typography>
         </Grid>
     </Grid>
 };
@@ -46,5 +50,5 @@ const users = [
         "lastName": "Robinson",
         "favorite": ["722f584a-cb5e-11ea-87d0-0242ac130003"],
         "role": "admin"
-    }
-]
+    },
+];
