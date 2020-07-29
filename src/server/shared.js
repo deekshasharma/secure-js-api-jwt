@@ -1,12 +1,12 @@
 const jsonfile = require('jsonfile');
 const users = './database/users.json';
+const inventory = './database/books.json';
 const Constants = require('./constants');
 const jwt = require('jsonwebtoken');
-const inventory = './database/books.json';
 const bcrypt = require('bcrypt');
 
 
-getUserDetails = async function getUserDetails(userName) {
+getUserByUsername = async function getUserDetails(userName) {
     const allUsers = await jsonfile.readFile(users);
     const filteredUserArray = allUsers.filter(user => (user.username === userName));
     return filteredUserArray.length === 0 ? {} : filteredUserArray[0];
@@ -24,6 +24,21 @@ const generateToken = (username, role) => {
     return jwt.sign(payload, process.env.SECRET, options);
 };
 
+const getUsernameFromToken = (authHeader) => {
+    const token = authHeader.split(" ")[1];
+    return jwt.decode(token)['sub'];
+};
+
+exports.getFavoriteBooksForUser = async function (authHeader) {
+    const username = getUsernameFromToken(authHeader);
+    const user = await getUserByUsername(username);
+    const favoriteBookIds = user['favorite'];
+    const allBooks = await jsonfile.readFile(inventory);
+    const favoriteBooks = [];
+    favoriteBookIds.map(id => favoriteBooks.push(allBooks.filter(book => id === book.id)[0]));
+    return favoriteBooks;
+};
+
 exports.verifyToken = (req, res, next) => {
     if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
     else {
@@ -38,11 +53,6 @@ exports.verifyToken = (req, res, next) => {
 exports.isAPIAccessAllowed = (token, apiName) => {
     const decodedToken = jwt.decode(token.split(" ")[1]);
     return (decodedToken['aud'].includes(apiName));
-};
-
-const getUsernameFromToken = (authHeader) => {
-    const token = authHeader.split(" ")[1];
-    return jwt.decode(token)['sub'];
 };
 
 exports.getAllUsers = async function () {
@@ -71,7 +81,7 @@ exports.addBook = async function (book) {
 
 exports.constructTokenResponse = async function (authHeader, userName) {
     let name = userName || getUsernameFromToken(authHeader);
-    const user = await getUserDetails(name);
+    const user = await getUserByUsername(name);
     return {
         access_token: generateToken(user.username, user.role),
         token_type: process.env.TOKEN_TYPE,
@@ -80,9 +90,10 @@ exports.constructTokenResponse = async function (authHeader, userName) {
 };
 
 exports.isCredentialValid = async function (username, password) {
-    const user = await getUserDetails(username);
+    const user = await getUserByUsername(username);
     if (user) {
         return bcrypt.compare(password, user.key)
             .then(result => result)
     } else return false;
 };
+

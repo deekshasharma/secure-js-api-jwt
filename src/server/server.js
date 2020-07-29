@@ -1,13 +1,10 @@
 require('dotenv').config({path: './variables.env'});
 const express = require('express');
-const jsonfile = require('jsonfile');
 const {uuid} = require('uuidv4');
 const Constants = require('./constants');
-const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks} = require('./shared');
+const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks,getFavoriteBooksForUser} = require('./shared');
 
 
-const inventory = './database/books.json';
-const users = './database/users.json';
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
@@ -55,23 +52,15 @@ app.post('/login', (req, res) => {
         });
 });
 
-app.get('/favorite/:id', verifyToken, (req, res) => {
+app.get('/favorite', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_FAVORITE)) {
-        jsonfile.readFile(users)
-            .then(allUsers => allUsers.filter(user => user.id === req.params.id)[0]['favorite'])
-            .then(favBookIds => {
-                jsonfile.readFile(inventory)
-                    .then(books => books)
-                    .then((books) => {
-                        const favoriteBooks = [];
-                        favBookIds.map(id => favoriteBooks.push(books.filter(book => id === book.id)[0]));
-                        res.send({favorites: favoriteBooks})
-                    })
-                    .catch(error => console.log("Cannot retrieve inventory ", error.message));
-            })
-            .catch(err => console.log("Cannot read users ", err.message))
+        getFavoriteBooksForUser(req.headers.authorization).then(books => {
+            constructTokenResponse(req.headers.authorization, null)
+                .then((tokenRes) => res.status(200).send(Object.assign(tokenRes, {favorites: books})))
+        })
     } else res.status(403).send({message: "You cannot view favorite books"});
 });
+
 
 app.post('/book', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.headers.authorization, Constants.ADD_BOOK)) {
