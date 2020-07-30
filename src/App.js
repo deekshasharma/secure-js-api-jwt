@@ -12,14 +12,18 @@ export default function App() {
     const [showLoginErr, setLoginError] = useState(false);
 
     //TODO: For incorrect username and password, showLoginErr should be set to true
-    function onClickLogin (username, password) {
+    function onClickLogin(username, password) {
         console.log(username);
         console.log(password);
     };
 
-    function onAddFavorite(bookId){
+    function onAddFavorite(bookId) {
         console.log("Favorite book added ", bookId);
     }
+
+    function onAddNewBook(name, author) {
+        console.log("Adding "+name+ " by "+ author);
+    };
 
     return (
         <div className="App">
@@ -35,7 +39,7 @@ export default function App() {
                         <MyFavorite/>
                     </Route>
                     <Route exact path="/book">
-                        <AddBook/>
+                        <AddBook onAddBook={onAddNewBook}/>
                     </Route>
                     <Route path="/">
                         <Home onClickLogin={onClickLogin} showLoginErr={showLoginErr}/>
@@ -89,7 +93,7 @@ function MyFavorite() {
     useEffect(() => {
         getDataFromBackend("http://localhost:5000/favorite/f2775f38-92fc-42e5-98a5-b137a0887a40")
             .then(result => setFavBooks(result.favorites));
-    },[]);
+    }, []);
 
     return <div>
         <h1>YOUR FAVORITE BOOKS</h1>

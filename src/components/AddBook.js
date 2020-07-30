@@ -1,13 +1,22 @@
 import React, {useState} from 'react';
-import {Grid, Typography, Button, TextField} from '@material-ui/core';
+import {Grid, Typography, Button, TextField, Snackbar} from '@material-ui/core';
 import '../styles.css';
 
 export const AddBook = ({onAddBook}) => {
     const [book, setBookName] = useState('');
     const [author, setAuthorName] = useState('');
+    const [bookAdded, setBookAdded] = useState(false);
 
     const onChangeBookName = (book) => setBookName(book);
     const onChangeAuthorName = (author) => setAuthorName(author);
+    const onClick = () => {
+        onAddBook(book, author);
+        setBookAdded(true);
+        setBookName('');
+        setAuthorName('');
+    };
+
+    const handleClose = () => setBookAdded(false);
 
 
     return <div className="AddBook">
@@ -28,7 +37,15 @@ export const AddBook = ({onAddBook}) => {
             </Grid>
             <Grid item style={{marginBottom: "7vh"}}>
                 <Button aria-label="login" variant="contained" size="large" color="primary"
-                        onClick={() => onAddBook(book, author)}>ADD BOOK</Button>
+                        onClick={onClick}>ADD BOOK</Button>
+            </Grid>
+            <Grid>
+                <Snackbar
+                    open={bookAdded}
+                    message="The book is added!"
+                    autoHideDuration={2000}
+                    onClose={handleClose}
+                />
             </Grid>
         </Grid>
     </div>
