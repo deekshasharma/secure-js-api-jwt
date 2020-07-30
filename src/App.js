@@ -5,6 +5,7 @@ import {Home} from "./components/Home";
 import {Books} from "./components/Books";
 import {Users} from "./components/Users";
 import {AddBook} from "./components/AddBook";
+import {MyFavorite} from "./components/MyFavorite";
 
 //TODO: Token verification should be done
 
@@ -36,7 +37,7 @@ export default function App() {
                         <Users/>
                     </Route>
                     <Route exact path="/favorite">
-                        <MyFavorite/>
+                        <MyFavorite books={books}/>
                     </Route>
                     <Route exact path="/book">
                         <AddBook onAddBook={onAddNewBook}/>
@@ -49,6 +50,21 @@ export default function App() {
         </div>
     );
 }
+
+const books = [
+    {
+        "name": "Surrounded by idiots",
+        "author": "Thomas Erikson",
+    },
+    {
+        "name": "The Tipping Point",
+        "author": "Malcolm Gladwell",
+    },
+    {
+        "name": "Stillness is the key",
+        "author": "Ryan Holiday",
+    }
+]
 
 // function Books() {
 //     const [collection, setCollection] = useState([]);
@@ -87,23 +103,23 @@ export default function App() {
 // }
 
 //TODO: URL should not be hard coded
-function MyFavorite() {
-    const [favBooks, setFavBooks] = useState([]);
-
-    useEffect(() => {
-        getDataFromBackend("http://localhost:5000/favorite/f2775f38-92fc-42e5-98a5-b137a0887a40")
-            .then(result => setFavBooks(result.favorites));
-    }, []);
-
-    return <div>
-        <h1>YOUR FAVORITE BOOKS</h1>
-        {favBooks.map((book, key) => {
-            return <h3 key={key}>
-                {book.name + " by " + book.author}
-            </h3>
-        })}
-    </div>
-}
+// function MyFavorite() {
+//     const [favBooks, setFavBooks] = useState([]);
+//
+//     useEffect(() => {
+//         getDataFromBackend("http://localhost:5000/favorite/f2775f38-92fc-42e5-98a5-b137a0887a40")
+//             .then(result => setFavBooks(result.favorites));
+//     }, []);
+//
+//     return <div>
+//         <h1>YOUR FAVORITE BOOKS</h1>
+//         {favBooks.map((book, key) => {
+//             return <h3 key={key}>
+//                 {book.name + " by " + book.author}
+//             </h3>
+//         })}
+//     </div>
+// }
 
 export const getDataFromBackend = async (endpoint) => {
     const response = await fetch(endpoint);
