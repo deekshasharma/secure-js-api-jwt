@@ -22,3 +22,10 @@
     margin-bottom: 2em;
     border-radius: 10px;
 }
+
+.AddBook{
+    display: flex;
+    align-items: center;
+    min-height: 20vh;
+    padding: 7em;
+}

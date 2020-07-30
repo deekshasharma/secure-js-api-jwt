@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Home} from "./components/Home";
 import {Books} from "./components/Books";
 import {Users} from "./components/Users";
+import {AddBook} from "./components/AddBook";
 
 //TODO: Token verification should be done
 
@@ -30,11 +31,11 @@ export default function App() {
                     <Route path="/users">
                         <Users/>
                     </Route>
-                    <Route exact path="/favorite/:id">
+                    <Route exact path="/favorite">
                         <MyFavorite/>
                     </Route>
                     <Route exact path="/book">
-                        <MyFavorite/>
+                        <AddBook/>
                     </Route>
                     <Route path="/">
                         <Home onClickLogin={onClickLogin} showLoginErr={showLoginErr}/>
