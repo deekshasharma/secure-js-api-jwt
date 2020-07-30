@@ -6,6 +6,7 @@ import {Books} from "./components/Books";
 import {Users} from "./components/Users";
 import {AddBook} from "./components/AddBook";
 import {MyFavorite} from "./components/MyFavorite";
+const BOOKS_URL = "http://localhost:5000/books";
 
 //TODO: Token verification should be done
 
@@ -121,7 +122,7 @@ const books = [
 //     </div>
 // }
 
-export const getDataFromBackend = async (endpoint) => {
-    const response = await fetch(endpoint);
+export const getDataFromBackend = async (url) => {
+    const response = await fetch(url);
     return await response.json();
 };

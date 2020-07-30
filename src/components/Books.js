@@ -54,7 +54,7 @@ const books = [
     },
     {
         "id": "228877ef-e264-46a2-948f-5a28dd592322",
-        "name": "Digital Minimalisml",
+        "name": "Digital Minimalism",
         "author": "Cal Newport"
     },
     {
