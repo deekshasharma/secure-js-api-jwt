@@ -1,14 +1,18 @@
 import React from 'react';
 import {Grid, Typography, Paper, Button} from '@material-ui/core';
 import '../styles.css';
+import {AppHeader} from "../AppHeader";
 
 export const Books = ({onAddFavorite}) => {
-    return <Grid container className="Content">
-        {books.map((book, key) => {
-            return <Book key={key} name={book.name} id={book.id} author={book.author} color={book.color}
-                         onClick={onAddFavorite}/>
-        })}
-    </Grid>
+    return <>
+        <AppHeader/>
+        <Grid container className="Content">
+            {books.map((book, key) => {
+                return <Book key={key} name={book.name} id={book.id} author={book.author} color={book.color}
+                             onClick={onAddFavorite}/>
+            })}
+        </Grid>
+    </>
 };
 
 const Book = ({name, id, author, onClick}) => {

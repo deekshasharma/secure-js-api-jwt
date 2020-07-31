@@ -1,98 +1,40 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './styles.css';
-import {BrowserRouter as Router, Route, Switch, Link} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Home} from "./components/Home";
 import {Books} from "./components/Books";
 import {Users} from "./components/Users";
 import {AddBook} from "./components/AddBook";
 import {MyFavorite} from "./components/MyFavorite";
-import {AppBar, Tabs, Tab} from "@material-ui/core";
 
 //TODO: Token verification should be done
 //TODO: Home/Login page should not have the Tab Menu. Make sure "/" gets routed to the Home Page
 
 export default function App() {
-    const tabs = ["/", "/books", "/favorite", "/book", "/users"];
-    const [showLoginErr, setLoginError] = useState(false);
-
-    //TODO: For incorrect username and password, showLoginErr should be set to true
-    function onClickLogin(username, password) {
-        console.log(username);
-        console.log(password);
-    };
-
-    function onAddFavorite(bookId) {
-        console.log("Favorite book added ", bookId);
-    }
-
-    function onAddNewBook(name, author) {
-        console.log("Adding " + name + " by " + author);
-    };
-
     return (
         <div className="App">
             <Router>
-                <AppBar position="static">
-                    <Tabs>
-                        <Tab label="Books"
-                             value="/books"
-                             component={Link}
-                             to={tabs[1]}
-                        />
-                        <Tab label="Favorite"
-                             value="/favorite"
-                             component={Link}
-                             to={tabs[2]}
-                        />
-                        <Tab label="Add Book"
-                             value="/book"
-                             component={Link}
-                             to={tabs[3]}
-                        />
-                        <Tab label="Users"
-                             value="/users"
-                             component={Link}
-                             to={tabs[4]}
-                        />
-                    </Tabs>
-                </AppBar>
                 <Switch>
-                    <Route path="/books">
-                        <Books onAddFavorite={onAddFavorite}/>
+                    <Route exact path="/books">
+                        <Books/>
                     </Route>
-                    <Route path="/users">
+                    <Route exact path="/users">
                         <Users/>
                     </Route>
                     <Route exact path="/favorite">
-                        <MyFavorite books={books}/>
+                        <MyFavorite/>
                     </Route>
                     <Route exact path="/book">
-                        <AddBook onAddBook={onAddNewBook}/>
+                        <AddBook/>
                     </Route>
                     <Route path="/">
-                        <Home onClickLogin={onClickLogin} showLoginErr={showLoginErr}/>
+                        <Home/>
                     </Route>
                 </Switch>
             </Router>
         </div>
     );
 }
-
-//TODO: Remove the hard coded books from here
-const books = [
-    {
-        "name": "Surrounded by idiots",
-        "author": "Thomas Erikson",
-    },
-    {
-        "name": "The Tipping Point",
-        "author": "Malcolm Gladwell",
-    },
-    {
-        "name": "Stillness is the key",
-        "author": "Ryan Holiday",
-    }
-];
 
 //TODO: Removed the dead code
 

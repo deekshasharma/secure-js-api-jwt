@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Grid, Typography, Button, TextField, Snackbar} from '@material-ui/core';
 import '../styles.css';
+import {AppHeader} from "../AppHeader";
 
 export const AddBook = ({onAddBook}) => {
     const [book, setBookName] = useState('');
@@ -20,6 +21,7 @@ export const AddBook = ({onAddBook}) => {
 
 
     return <div className="AddBook">
+        <AppHeader/>
         <Grid container direction="column" alignItems="center">
             <Grid item style={{marginBottom: "5vh"}}>
                 <Typography variant="h3" gutterBottom>Add New Book!

@@ -1,20 +1,24 @@
 import React from 'react';
 import {Grid, Typography, Avatar} from '@material-ui/core';
 import '../styles.css';
+import {AppHeader} from "../AppHeader";
 
 export const Users = () => {
-    return <Grid container className="Content" justify="center">
-        <Grid item xs={4}>
-            {users.map((user, key) => {
-                return <User key={key}
-                             userName={user.username}
-                             firstName={user.firstName}
-                             lastName={user.lastName}
-                             role={user.role}/>
-            })
-            }
+    return <>
+        <AppHeader/>
+        <Grid container className="Content" justify="center">
+            <Grid item xs={4}>
+                {users.map((user, key) => {
+                    return <User key={key}
+                                 userName={user.username}
+                                 firstName={user.firstName}
+                                 lastName={user.lastName}
+                                 role={user.role}/>
+                })
+                }
+            </Grid>
         </Grid>
-    </Grid>
+    </>
 };
 
 const User = ({firstName, lastName, userName, role}) => {
