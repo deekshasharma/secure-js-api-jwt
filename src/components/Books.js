@@ -14,15 +14,13 @@ export const Books = ({onAddFavorite}) => {
     useEffect(() => {
         getDataFromBackend("/books")
             .then(result => {
-                if (result instanceof Error) redirectToLogin();
+                if (result instanceof Error) history.push("/login");
                  else {
                     const allBooks = result.books;
                     setBooks([...allBooks])
                 }
             });
     }, []);
-
-    const redirectToLogin = () => history.push("/login");
 
     return <>
         <AppHeader/>
