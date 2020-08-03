@@ -15,7 +15,7 @@ export const Books = ({onAddFavorite}) => {
         getDataFromBackend("/books")
             .then(result => {
                 if (result instanceof Error) history.push("/login");
-                 else {
+                else {
                     const allBooks = result.books;
                     setBooks([...allBooks])
                 }

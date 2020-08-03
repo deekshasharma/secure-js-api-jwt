@@ -21,7 +21,6 @@ export const Login = ({showLoginErr}) => {
     };
 
 
-
     return <Grid container direction="column" alignItems="center" style={{marginTop: "10vh"}}>
         <Grid item style={{marginBottom: "10vh"}}>
             <Typography variant="h3">Welcome to Bookie!
