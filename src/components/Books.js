@@ -1,9 +1,26 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Grid, Typography, Paper, Button} from '@material-ui/core';
 import '../styles.css';
 import {AppHeader} from "../AppHeader";
 
 export const Books = ({onAddFavorite}) => {
+
+    // const [books, setBooks] = useState([]);
+    // useEffect(() => {
+    //     getDataFromBackend("/books")
+    //         .then(result => {
+    //             console.log({result})
+    //             const allBooks = result.books;
+    //             setBooks([...allBooks])
+    //         });
+    //
+    // }, []);
+
+    const getDataFromBackend = async (url) => {
+        const response = await fetch(url);
+        return await response.json();
+    };
+
     return <>
         <AppHeader/>
         <Grid container className="Content">

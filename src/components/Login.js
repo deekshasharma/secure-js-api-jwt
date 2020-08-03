@@ -1,13 +1,33 @@
 import React, {useState} from 'react';
 import {Grid, Typography, TextField, Button} from '@material-ui/core';
 
+let headers = new Headers();
+let base64 = require('base-64');
 
-export const Home = ({onClickLogin, showLoginErr}) => {
+export const Login = ({showLoginErr}) => {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
 
     const onChangeUsername = (username) => setUserName(username);
     const onChangePassword = (pass) => setPassword(pass);
+
+    /**
+     * 4. Refactor the code to use HTTP Proxy so that server can send the token in a cookie
+     * 5. Check if you can read the Cookie.
+     */
+    // const onClickLogin = () => {
+    //     headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+    //     fetch("http://localhost:5000/login", {headers: headers, method: 'POST'})
+    //         .then(res => res.json())
+    //         .then(data => console.log(data))
+    // };
+
+    const onClickLogin = () => {
+            headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+            fetch("/login", {headers: headers, method: 'POST'})
+                .then(res => res.json())
+                .then(data => console.log(data))
+        };
 
 
     return <Grid container direction="column" alignItems="center" style={{marginTop: "10vh"}}>
@@ -25,7 +45,7 @@ export const Home = ({onClickLogin, showLoginErr}) => {
         </Grid>
         <Grid item style={{marginBottom: "7vh"}}>
             <Button aria-label="login" variant="contained" size="large" color="primary"
-                    onClick={() => onClickLogin(username, password)}>LOGIN</Button>
+                    onClick={onClickLogin}>LOGIN</Button>
         </Grid>
 
         {showLoginErr && <Grid item>

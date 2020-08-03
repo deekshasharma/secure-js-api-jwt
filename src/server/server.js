@@ -2,7 +2,7 @@ require('dotenv').config({path: './variables.env'});
 const express = require('express');
 const {uuid} = require('uuidv4');
 const Constants = require('./constants');
-const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks,getFavoriteBooksForUser} = require('./shared');
+const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks, getFavoriteBooksForUser} = require('./shared');
 
 
 const app = express();
@@ -48,7 +48,16 @@ app.post('/login', (req, res) => {
     isCredentialValid(username, password)
         .then(result => {
             if (!result) res.status(403).send({message: "Either username or password is incorrect"});
-            else constructTokenResponse(null, username).then(tokenRes => res.send(tokenRes))
+            else constructTokenResponse(null, username)
+                .then(token => {
+                    res.cookie('token', token, {httpOnly: true});
+                    res.status(200)
+                        .send({
+                            token_type: process.env.TOKEN_TYPE,
+                            expires_in: process.env.EXPIRY,
+                            access_token: token
+                        })
+                })
         });
 });
 

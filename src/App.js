@@ -1,7 +1,7 @@
 import React from 'react';
 import './styles.css';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import {Home} from "./components/Home";
+import {Login} from "./components/Login";
 import {Books} from "./components/Books";
 import {Users} from "./components/Users";
 import {AddBook} from "./components/AddBook";
@@ -28,7 +28,7 @@ export default function App() {
                         <AddBook/>
                     </Route>
                     <Route path="/">
-                        <Home/>
+                        <Login/>
                     </Route>
                 </Switch>
             </Router>

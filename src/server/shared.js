@@ -79,15 +79,22 @@ exports.addBook = async function (book) {
     return await jsonfile.writeFile(inventory, allBooks);
 };
 
+// exports.constructTokenResponse = async function (authHeader, userName) {
+//     let name = userName || getUsernameFromToken(authHeader);
+//     const user = await getUserByUsername(name);
+//     return {
+//         access_token: generateToken(user.username, user.role),
+//         token_type: process.env.TOKEN_TYPE,
+//         expires_in: process.env.EXPIRY,
+//     }
+// };
+
 exports.constructTokenResponse = async function (authHeader, userName) {
     let name = userName || getUsernameFromToken(authHeader);
     const user = await getUserByUsername(name);
-    return {
-        access_token: generateToken(user.username, user.role),
-        token_type: process.env.TOKEN_TYPE,
-        expires_in: process.env.EXPIRY,
-    }
+    return  generateToken(user.username, user.role)
 };
+
 
 exports.isCredentialValid = async function (username, password) {
     const user = await getUserByUsername(username);
