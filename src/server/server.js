@@ -1,5 +1,6 @@
 require('dotenv').config({path: './variables.env'});
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const {uuid} = require('uuidv4');
 const Constants = require('./constants');
 const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks, getFavoriteBooksForUser} = require('./shared');
@@ -12,6 +13,7 @@ const cors = require('cors');
 app.listen(port, () => console.log(`Listening on port ${port}`));
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.send({message: 'Welcome to our Home '});
@@ -28,15 +30,29 @@ app.get('/users', verifyToken, (req, res) => {
 });
 
 
+// app.get('/books', verifyToken, (req, res) => {
+//     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
+//         getAllBooks()
+//             .then(books => {
+//                 constructTokenResponse(req.headers.authorization, null)
+//                     .then((tokenRes) => res.status(200).send(Object.assign(tokenRes, {books: books})))
+//             })
+//             .catch(error => console.error("Error retrieving books ", error.message));
+//     } else res.status(401).send({message: "Cannot view books"});
+// });
+
 app.get('/books', verifyToken, (req, res) => {
-    if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
+    if (isAPIAccessAllowed(req.cookies.token, Constants.SHOW_BOOKS)) {
         getAllBooks()
             .then(books => {
-                constructTokenResponse(req.headers.authorization, null)
-                    .then((tokenRes) => res.status(200).send(Object.assign(tokenRes, {books: books})))
+                constructTokenResponse(req.cookies.token, null)
+                    .then((token) => {
+                        res.cookie('token', token, {httpOnly: true});
+                        res.status(200).send({books: books});
+                    })
             })
             .catch(error => console.error("Error retrieving books ", error.message));
-    } else res.status(401).send({message: "Cannot view books"});
+    } else res.status(401).send({books: [], message: "You are not authorized to view books"});
 });
 
 

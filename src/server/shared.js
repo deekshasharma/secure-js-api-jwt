@@ -24,10 +24,12 @@ const generateToken = (username, role) => {
     return jwt.sign(payload, process.env.SECRET, options);
 };
 
-const getUsernameFromToken = (authHeader) => {
-    const token = authHeader.split(" ")[1];
-    return jwt.decode(token)['sub'];
-};
+// const getUsernameFromToken = (authHeader) => {
+//     const token = authHeader.split(" ")[1];
+//     return jwt.decode(token)['sub'];
+// };
+const getUsernameFromToken = (token) => jwt.decode(token)['sub'];
+
 
 exports.getFavoriteBooksForUser = async function (authHeader) {
     const username = getUsernameFromToken(authHeader);
@@ -39,10 +41,21 @@ exports.getFavoriteBooksForUser = async function (authHeader) {
     return favoriteBooks;
 };
 
+// exports.verifyToken = (req, res, next) => {
+//     if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
+//     else {
+//         const token = req.headers.authorization.split(" ")[1];
+//         jwt.verify(token, process.env.SECRET, function (err, decode) {
+//             if (err) res.status(401).send({message: "Please login again! Your session has expired"});
+//             else next();
+//         })
+//     }
+// };
+
 exports.verifyToken = (req, res, next) => {
-    if (!req.headers.authorization) res.status(401).send({message: "Not Authorized to access data"});
+    if (!req.cookies.token) res.status(401).send({message: "Not Authorized to access data"});
     else {
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.cookies.token;
         jwt.verify(token, process.env.SECRET, function (err, decode) {
             if (err) res.status(401).send({message: "Please login again! Your session has expired"});
             else next();
@@ -50,10 +63,16 @@ exports.verifyToken = (req, res, next) => {
     }
 };
 
+
+// exports.isAPIAccessAllowed = (token, apiName) => {
+//     const decodedToken = jwt.decode(token.split(" ")[1]);
+//     return (decodedToken['aud'].includes(apiName));
+// };
 exports.isAPIAccessAllowed = (token, apiName) => {
-    const decodedToken = jwt.decode(token.split(" ")[1]);
+    const decodedToken = jwt.decode(token);
     return (decodedToken['aud'].includes(apiName));
 };
+
 
 exports.getAllUsers = async function () {
     const allUsers = await jsonfile.readFile(users);
@@ -89,11 +108,17 @@ exports.addBook = async function (book) {
 //     }
 // };
 
-exports.constructTokenResponse = async function (authHeader, userName) {
-    let name = userName || getUsernameFromToken(authHeader);
+// exports.constructTokenResponse = async function (authHeader, userName) {
+//     let name = userName || getUsernameFromToken(authHeader);
+//     const user = await getUserByUsername(name);
+//     return  generateToken(user.username, user.role)
+// };
+exports.constructTokenResponse = async function (token, userName) {
+    let name = userName || getUsernameFromToken(token);
     const user = await getUserByUsername(name);
     return  generateToken(user.username, user.role)
 };
+
 
 
 exports.isCredentialValid = async function (username, password) {
