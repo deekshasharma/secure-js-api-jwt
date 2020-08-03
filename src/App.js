@@ -36,27 +36,6 @@ export default function App() {
     );
 }
 
-//TODO: Removed the dead code
-
-// function Books() {
-//     const [collection, setCollection] = useState([]);
-//     useEffect(() => {
-//         getDataFromBackend("http://localhost:5000/books")
-//             .then(result => {
-//                 const allBooks = result.bookCollection;
-//                 setCollection([...allBooks])
-//             });
-//
-//     }, []);
-//     return <div>
-//         {collection.map((book, key) => {
-//             return <h2 key={key}>
-//                 {book.name} by {book.author}
-//             </h2>
-//         })}
-//     </div>;
-// }
-
 
 // function Users() {
 //     const [users, setUsers] = useState([]);
@@ -93,7 +72,7 @@ export default function App() {
 //     </div>
 // }
 
-export const getDataFromBackend = async (url) => {
-    const response = await fetch(url);
-    return await response.json();
-};
+// export const getDataFromBackend = async (url) => {
+//     const response = await fetch(url);
+//     return await response.json();
+// };

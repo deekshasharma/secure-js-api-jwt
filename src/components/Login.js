@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Grid, Typography, TextField, Button} from '@material-ui/core';
+import {useHistory} from "react-router-dom";
 
 let headers = new Headers();
 let base64 = require('base-64');
@@ -10,24 +11,15 @@ export const Login = ({showLoginErr}) => {
 
     const onChangeUsername = (username) => setUserName(username);
     const onChangePassword = (pass) => setPassword(pass);
-
-    /**
-     * 4. Refactor the code to use HTTP Proxy so that server can send the token in a cookie
-     * 5. Check if you can read the Cookie.
-     */
-    // const onClickLogin = () => {
-    //     headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
-    //     fetch("http://localhost:5000/login", {headers: headers, method: 'POST'})
-    //         .then(res => res.json())
-    //         .then(data => console.log(data))
-    // };
+    let history = useHistory();
 
     const onClickLogin = () => {
-            headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
-            fetch("/login", {headers: headers, method: 'POST'})
-                .then(res => res.json())
-                .then(data => console.log(data))
-        };
+        headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+        fetch("/login", {headers: headers, method: 'POST'})
+            .then(res => res.json())
+            .then(() => history.push("/books"))
+    };
+
 
 
     return <Grid container direction="column" alignItems="center" style={{marginTop: "10vh"}}>
@@ -37,7 +29,8 @@ export const Login = ({showLoginErr}) => {
             </Typography>
         </Grid>
         <Grid item style={{marginBottom: "5vh"}}>
-            <TextField id="username-input" label="username" value={username} onChange={e => onChangeUsername(e.target.value)}/>
+            <TextField id="username-input" label="username" value={username}
+                       onChange={e => onChangeUsername(e.target.value)}/>
         </Grid>
         <Grid item style={{marginBottom: "7vh"}}>
             <TextField id="password-input" label="password" type="password" value={password}

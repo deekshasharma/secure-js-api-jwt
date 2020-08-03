@@ -5,7 +5,6 @@ const {uuid} = require('uuidv4');
 const Constants = require('./constants');
 const {verifyToken, isAPIAccessAllowed, getAllUsers, addBook, constructTokenResponse, isCredentialValid, getAllBooks, getFavoriteBooksForUser} = require('./shared');
 
-
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
@@ -15,31 +14,18 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-    res.send({message: 'Welcome to our Home '});
-});
-
 app.get('/users', verifyToken, (req, res) => {
-    if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_USERS)) {
+    if (isAPIAccessAllowed(req.cookies.token, Constants.SHOW_USERS)) {
         getAllUsers()
             .then(users => {
-                constructTokenResponse(req.headers.authorization, null)
-                    .then(tokenRes => res.status(200).send(Object.assign(tokenRes, {users: users})))
+                constructTokenResponse(req.cookies.token, null)
+                    .then(token => {
+                        res.cookie('token', token, {httpOnly: true});
+                        res.status(200).send( {users: users})
+                    })
             }).catch(error => console.error("Error retrieving users ", error.message));
-    } else res.status(401).send({message: "You cannot view users, only admin user can."})
+    } else res.status(401).send({message: "You are not authorized to view users"})
 });
-
-
-// app.get('/books', verifyToken, (req, res) => {
-//     if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_BOOKS)) {
-//         getAllBooks()
-//             .then(books => {
-//                 constructTokenResponse(req.headers.authorization, null)
-//                     .then((tokenRes) => res.status(200).send(Object.assign(tokenRes, {books: books})))
-//             })
-//             .catch(error => console.error("Error retrieving books ", error.message));
-//     } else res.status(401).send({message: "Cannot view books"});
-// });
 
 app.get('/books', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.cookies.token, Constants.SHOW_BOOKS)) {
@@ -52,7 +38,7 @@ app.get('/books', verifyToken, (req, res) => {
                     })
             })
             .catch(error => console.error("Error retrieving books ", error.message));
-    } else res.status(401).send({books: [], message: "You are not authorized to view books"});
+    } else res.status(401).send({message: "You are not authorized to view books"});
 });
 
 
@@ -78,22 +64,28 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/favorite', verifyToken, (req, res) => {
-    if (isAPIAccessAllowed(req.headers.authorization, Constants.SHOW_FAVORITE)) {
-        getFavoriteBooksForUser(req.headers.authorization).then(books => {
-            constructTokenResponse(req.headers.authorization, null)
-                .then((tokenRes) => res.status(200).send(Object.assign(tokenRes, {favorites: books})))
+    if (isAPIAccessAllowed(req.cookies.token, Constants.SHOW_FAVORITE)) {
+        getFavoriteBooksForUser(req.cookies.token).then(books => {
+            constructTokenResponse(req.cookies.token, null)
+                .then((token) => {
+                    res.cookie('token', token, {httpOnly: true});
+                    res.status(200).send({favorites: books})
+                })
         })
     } else res.status(403).send({message: "You cannot view favorite books"});
 });
 
 
 app.post('/book', verifyToken, (req, res) => {
-    if (isAPIAccessAllowed(req.headers.authorization, Constants.ADD_BOOK)) {
+    if (isAPIAccessAllowed(req.cookies.token, Constants.ADD_BOOK)) {
         addBook({name: req.body.name, author: req.body.author, id: uuid()})
             .then(err => {
                 if (err) console.log(err);
                 else {
-                    constructTokenResponse(req.headers.authorization).then(tokenRes => res.send(tokenRes))
+                    constructTokenResponse(req.cookies.token).then(token => {
+                        res.cookie('token', token, {httpOnly: true});
+                        res.status(200).send({message: "Book added successfully"})
+                    })
                 }
             })
     } else res.status(401).send({message: "Sorry! Only admin can add a book"})

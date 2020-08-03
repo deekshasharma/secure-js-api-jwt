@@ -2,27 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {Grid, Typography, Paper, Button} from '@material-ui/core';
 import '../styles.css';
 import {AppHeader} from "../AppHeader";
+import {getDataFromBackend} from "./util";
+import {useHistory} from "react-router-dom";
 
 //TODO: Redirect to Login page when status code is not HTTP 200
 export const Books = ({onAddFavorite}) => {
     const [books, setBooks] = useState([]);
+
+    let history = useHistory();
+
     useEffect(() => {
         getDataFromBackend("/books")
-            .then(response => {
-                if (response.status !== 200) {
-                    console.log("Login Again");
-                    setBooks([]);
-                } else {
-                    const allBooks = response.books;
+            .then(result => {
+                if (result instanceof Error) redirectToLogin();
+                 else {
+                    const allBooks = result.books;
                     setBooks([...allBooks])
                 }
             });
     }, []);
 
-    const getDataFromBackend = async (url) => {
-        const response = await fetch(url);
-        return await response.json();
-    };
+    const redirectToLogin = () => history.push("/login");
 
     return <>
         <AppHeader/>
