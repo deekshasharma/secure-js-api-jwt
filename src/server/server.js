@@ -21,7 +21,7 @@ app.get('/users', verifyToken, (req, res) => {
                 constructTokenResponse(req.cookies.token, null)
                     .then(token => {
                         res.cookie('token', token, {httpOnly: true});
-                        res.status(200).send( {users: users})
+                        res.status(200).send({users: users})
                     })
             }).catch(error => console.error("Error retrieving users ", error.message));
     } else res.status(401).send({message: "You are not authorized to view users"})
@@ -63,7 +63,7 @@ app.post('/login', (req, res) => {
         });
 });
 
-app.get('/logout', (req, res) =>  res.clearCookie('token'));
+app.get('/logout', (req, res) => res.clearCookie('token'));
 
 
 app.get('/favorite', verifyToken, (req, res) => {

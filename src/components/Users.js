@@ -6,17 +6,22 @@ import {getDataFromBackend} from "./util";
 
 //TODO: Redirect to Login page when status code is not HTTP 200
 export const Users = () => {
-    const [users, setUsers] = useState([]);
-    useEffect(() => {
-        getDataFromBackend("/users")
-            .then(response => {
-                if(response.status !== 200) setUsers([]);
-                else setUsers([...response])
-            });
-    }, []);
-    return <>
+    // const [users, setUsers] = useState([]);
+    // useEffect(() => {
+    //     getDataFromBackend("/users")
+    //         .then(response => {
+    //             if(response.status !== 200) setUsers([]);
+    //             else setUsers([...response])
+    //         });
+    // }, []);
+    return <div className="Content">
         <AppHeader tabValue={3}/>
-        <Grid container className="Content" justify="center">
+        <Grid container justify="center" direction="column" alignItems="center">
+            <Grid item style={{marginBottom: "5vh"}}>
+                <Typography variant="h3" gutterBottom>Bookie Users!
+                    <span role="img" aria-label="books">🤓🤠</span>
+                </Typography>
+            </Grid>
             <Grid item xs={4}>
                 {users.map((user, key) => {
                     return <User key={key}
@@ -28,7 +33,7 @@ export const Users = () => {
                 }
             </Grid>
         </Grid>
-    </>
+    </div>
 };
 
 const User = ({firstName, lastName, userName, role}) => {
@@ -46,31 +51,21 @@ const User = ({firstName, lastName, userName, role}) => {
 };
 
 
-//TODO: Remove test data
-/**
- * useEffect(() => {
-//         getDataFromBackend("http://localhost:5000/users")
-//             .then(result => setUsers([...result]));
-//     }, []);
- * @type {*[]}
- */
-// const users = [
-//     {
-//         "id": "f2775f38-92fc-42e5-98a5-b137a0887a40",
-//         "username": "deeksha30",
-//         "key": "$2b$10$ph9/OK1lN/.9KzkeGKGPK.bxOkqJ2b9A2AqH/5iPkS7dmqAnUn.vi",
-//         "firstName": "Deeksha",
-//         "lastName": "Sharma",
-//         "favorite": ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"],
-//         "role": "member"
-//     },
-//     {
-//         "id": "677c96e2-cb5e-11ea-87d0-0242ac130003",
-//         "firstName": "Amy",
-//         "username": "zenmade23",
-//         "key": "$2b$10$ruGV.xw6P0zuPUa0vt694eLO5LwckcxFZ1NfzdzDQKF12E2240vZy",
-//         "lastName": "Robinson",
-//         "favorite": ["722f584a-cb5e-11ea-87d0-0242ac130003"],
-//         "role": "admin"
-//     },
-// ];
+const users = [
+    {
+        "id": "f2775f38-92fc-42e5-98a5-b137a0887a40",
+        "username": "deeksha30",
+        "firstName": "Deeksha",
+        "lastName": "Sharma",
+        "favorite": ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"],
+        "role": "member"
+    },
+    {
+        "id": "677c96e2-cb5e-11ea-87d0-0242ac130003",
+        "firstName": "Amy",
+        "username": "zenmade23",
+        "lastName": "Robinson",
+        "favorite": ["722f584a-cb5e-11ea-87d0-0242ac130003"],
+        "role": "admin"
+    },
+];

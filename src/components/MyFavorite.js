@@ -19,9 +19,9 @@ const books = [
 ];
 
 export const MyFavorite = () => {
-    return <>
+    return <div className="Content">
         <AppHeader tabValue={1}/>
-        <Grid container direction="column" alignItems="center" className="Content">
+        <Grid container direction="column" alignItems="center">
             <Grid item style={{marginBottom: "5vh"}}>
                 <Typography variant="h3" gutterBottom>Your Favorite Books!
                     <span role="img" aria-label="books">👍</span>
@@ -40,5 +40,5 @@ export const MyFavorite = () => {
                 })}
             </Grid>
         </Grid>
-    </>
+    </div>
 };
