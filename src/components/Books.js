@@ -4,15 +4,22 @@ import '../styles.css';
 import {AppHeader} from "../AppHeader";
 
 export const Books = ({onAddFavorite}) => {
-    return <>
+    return <div className="Content">
         <AppHeader tabValue={0}/>
-        <Grid container className="Content">
+        <Grid container justify="center" alignItems="center" direction="column">
+            <Grid item style={{marginBottom: "5vh"}}>
+                <Typography variant="h3" gutterBottom>Curated Books!
+                    <span role="img" aria-label="books">📚</span>
+                </Typography>
+            </Grid>
+            <Grid item container justify="center">
             {books.map((book, key) => {
                 return <Book key={key} name={book.name} id={book.id} author={book.author} color={book.color}
                              onClick={onAddFavorite}/>
             })}
+            </Grid>
         </Grid>
-    </>
+    </div>
 };
 
 const Book = ({name, id, author, onClick}) => {

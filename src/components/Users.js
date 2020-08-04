@@ -4,9 +4,14 @@ import '../styles.css';
 import {AppHeader} from "../AppHeader";
 
 export const Users = () => {
-    return <>
+    return <div className="Content">
         <AppHeader tabValue={3}/>
-        <Grid container className="Content" justify="center">
+        <Grid container justify="center" direction="column" alignItems="center">
+            <Grid item style={{marginBottom: "5vh"}}>
+                <Typography variant="h3" gutterBottom>Bookie Users!
+                    <span role="img" aria-label="books">🤓🤠</span>
+                </Typography>
+            </Grid>
             <Grid item xs={4}>
                 {users.map((user, key) => {
                     return <User key={key}
@@ -18,7 +23,7 @@ export const Users = () => {
                 }
             </Grid>
         </Grid>
-    </>
+    </div>
 };
 
 const User = ({firstName, lastName, userName, role}) => {
