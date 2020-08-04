@@ -12,18 +12,12 @@ export const AppHeader = ({tabValue}) => {
 
     let history = useHistory();
 
-    const handleClick = (event, newValue) => {
-        history.push(tabs[newValue])
-    };
+    const handleClick = (event, newValue) => history.push(tabs[newValue]);
 
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    const handleMenu = (event) => setAnchorEl(event.currentTarget);
 
     const handleClose = () => {
-        fetch("/logout")
-            .then(res => history.push("/login"));
-        setAnchorEl(null);
+        fetch("/logout").then(() => history.push("/login"));
     };
 
     return <div style={{flexGrow: 1}}>
@@ -60,7 +54,7 @@ export const AppHeader = ({tabValue}) => {
                         open={open}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
+                        <MenuItem>Profile</MenuItem>
                         <MenuItem onClick={handleClose}>Logout</MenuItem>
                     </Menu>
                 </Toolbar>
