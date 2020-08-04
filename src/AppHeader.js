@@ -21,6 +21,8 @@ export const AppHeader = () => {
     };
 
     const handleClose = () => {
+        fetch("/logout")
+            .then(res => history.push("/login"));
         setAnchorEl(null);
     };
 

@@ -63,12 +63,15 @@ app.post('/login', (req, res) => {
         });
 });
 
+app.get('/logout', (req, res) =>  res.clearCookie('token'));
+
+
 app.get('/favorite', verifyToken, (req, res) => {
     if (isAPIAccessAllowed(req.cookies.token, Constants.SHOW_FAVORITE)) {
         getFavoriteBooksForUser(req.cookies.token).then(books => {
             constructTokenResponse(req.cookies.token, null)
                 .then((token) => {
-                    res.cookie('token', token, {httpOnly: true});
+                    res.cookie('token', token);
                     res.status(200).send({favorites: books})
                 })
         })
