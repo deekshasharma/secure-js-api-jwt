@@ -21,7 +21,7 @@ export const AddBook = ({onAddBook}) => {
 
 
     return <div className="AddBook">
-        <AppHeader/>
+        <AppHeader tabValue={2}/>
         <Grid container direction="column" alignItems="center">
             <Grid item style={{marginBottom: "5vh"}}>
                 <Typography variant="h3" gutterBottom>Add New Book!

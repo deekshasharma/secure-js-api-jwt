@@ -6,7 +6,7 @@ import {AppHeader} from "../AppHeader";
 const books = [
     {
         "name": "Surrounded by idiots",
-        "author": "Thomas Erikson",
+        "author": "Deeksha Erikson",
     },
     {
         "name": "The Tipping Point",
@@ -20,7 +20,7 @@ const books = [
 
 export const MyFavorite = () => {
     return <>
-        <AppHeader/>
+        <AppHeader tabValue={1}/>
         <Grid container direction="column" alignItems="center" className="Content">
             <Grid item style={{marginBottom: "5vh"}}>
                 <Typography variant="h3" gutterBottom>Your Favorite Books!

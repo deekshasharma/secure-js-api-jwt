@@ -5,16 +5,16 @@ import {BrowserRouter as Router, useHistory} from "react-router-dom";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 
-export const AppHeader = () => {
+export const AppHeader = ({tabValue}) => {
     const tabs = ["/books", "/favorite", "/book", "/users"];
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
     let history = useHistory();
 
-    function handleClick(urlIndex) {
-        history.push(tabs[urlIndex])
-    }
+    const handleClick = (event, newValue) => {
+        history.push(tabs[newValue])
+    };
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -30,24 +30,11 @@ export const AppHeader = () => {
         <Router>
             <AppBar position="fixed">
                 <Toolbar>
-                    <Tabs value="/books" style={{paddingRight: "40vw"}}>
-                        <Tab label="Books"
-                             value="/books"
-                             onClick={() => handleClick(0)}
-                        />
-                        <Tab label="Favorite"
-                             value="/favorite"
-                             onClick={() => handleClick(1)}
-                             to={tabs[1]}
-                        />
-                        <Tab label="Add Book"
-                             value="/book"
-                             onClick={() => handleClick(2)}
-                        />
-                        <Tab label="Users"
-                             value="/users"
-                             onClick={() => handleClick(3)}
-                        />
+                    <Tabs value={tabValue} onChange={handleClick} style={{paddingRight: "40vw"}}>
+                        <Tab label="Books"/>
+                        <Tab label="Favorite"/>
+                        <Tab label="Add Book"/>
+                        <Tab label="Users"/>
                     </Tabs>
                     <IconButton
                         aria-label="account of current user"
