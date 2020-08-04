@@ -7,9 +7,6 @@ import {Users} from "./components/Users";
 import {AddBook} from "./components/AddBook";
 import {MyFavorite} from "./components/MyFavorite";
 
-//TODO: Token verification should be done
-//TODO: Home/Login page should not have the Tab Menu. Make sure "/" gets routed to the Home Page
-
 export default function App() {
     return (
         <div className="App">
@@ -35,44 +32,3 @@ export default function App() {
         </div>
     );
 }
-
-
-// function Users() {
-//     const [users, setUsers] = useState([]);
-//     useEffect(() => {
-//         getDataFromBackend("http://localhost:5000/users")
-//             .then(result => setUsers([...result]));
-//     }, []);
-//
-//     return <div>
-//         {users.map((user, key) => {
-//             return <h2 key={key}>
-//                 {user.fName + " " + user.lastName}
-//             </h2>
-//         })}
-//     </div>
-// }
-
-//TODO: URL should not be hard coded
-// function MyFavorite() {
-//     const [favBooks, setFavBooks] = useState([]);
-//
-//     useEffect(() => {
-//         getDataFromBackend("http://localhost:5000/favorite/f2775f38-92fc-42e5-98a5-b137a0887a40")
-//             .then(result => setFavBooks(result.favorites));
-//     }, []);
-//
-//     return <div>
-//         <h1>YOUR FAVORITE BOOKS</h1>
-//         {favBooks.map((book, key) => {
-//             return <h3 key={key}>
-//                 {book.name + " by " + book.author}
-//             </h3>
-//         })}
-//     </div>
-// }
-
-// export const getDataFromBackend = async (url) => {
-//     const response = await fetch(url);
-//     return await response.json();
-// };

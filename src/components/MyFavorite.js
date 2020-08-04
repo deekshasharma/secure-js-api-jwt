@@ -6,7 +6,7 @@ import {AppHeader} from "../AppHeader";
 const books = [
     {
         "name": "Surrounded by idiots",
-        "author": "Deeksha Erikson",
+        "author": "Thomas Erikson",
     },
     {
         "name": "The Tipping Point",

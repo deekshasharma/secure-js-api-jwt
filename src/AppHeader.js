@@ -17,7 +17,7 @@ export const AppHeader = ({tabValue}) => {
     const handleMenu = (event) => setAnchorEl(event.currentTarget);
 
     const handleClose = () => {
-        fetch("/logout").then(() => history.push("/login"));
+        setAnchorEl(null)
     };
 
     return <div style={{flexGrow: 1}}>
@@ -55,7 +55,7 @@ export const AppHeader = ({tabValue}) => {
                         onClose={handleClose}
                     >
                         <MenuItem>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <MenuItem onClick={() => console.log('Clicked Logout!')}>Logout</MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>
