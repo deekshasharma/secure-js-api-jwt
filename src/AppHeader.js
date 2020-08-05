@@ -24,12 +24,13 @@ export const AppHeader = ({tabValue}) => {
         <Router>
             <AppBar position="fixed">
                 <Toolbar>
-                    <Tabs value={tabValue} onChange={handleClick} style={{paddingRight: "40vw"}}>
+                    <Tabs value={tabValue} onChange={handleClick}>
                         <Tab label="Books"/>
                         <Tab label="Favorite"/>
                         <Tab label="Add Book"/>
                         <Tab label="Users"/>
                     </Tabs>
+                    <div style={{flexGrow: 1}}/>
                     <IconButton
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
@@ -42,15 +43,7 @@ export const AppHeader = ({tabValue}) => {
                     <Menu
                         id="menu-appbar"
                         anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
                         keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
                         open={open}
                         onClose={handleClose}
                     >
