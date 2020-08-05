@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles.css';
+import '../styles.css';
 import {AppBar, Tab, Tabs, MenuItem, IconButton, Menu, Toolbar} from "@material-ui/core";
 import {BrowserRouter as Router, useHistory} from "react-router-dom";
 import AccountCircle from '@material-ui/icons/AccountCircle';

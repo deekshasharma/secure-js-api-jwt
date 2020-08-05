@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Grid, Paper, Typography} from '@material-ui/core';
 import '../styles.css';
-import {AppHeader} from "../AppHeader";
+import {AppHeader} from "./AppHeader";
 
 export const Books = ({onAddFavorite}) => {
     return <div className="Content">

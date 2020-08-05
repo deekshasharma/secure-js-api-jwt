@@ -1,7 +1,7 @@
 import React from 'react';
 import {Avatar, Grid, Typography} from '@material-ui/core';
 import '../styles.css';
-import {AppHeader} from "../AppHeader";
+import {AppHeader} from "./AppHeader";
 
 export const Users = () => {
     return <div className="Content">

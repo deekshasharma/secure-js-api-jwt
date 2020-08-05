@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Grid, Typography, Button, TextField, Snackbar} from '@material-ui/core';
 import '../styles.css';
-import {AppHeader} from "../AppHeader";
+import {AppHeader} from "./AppHeader";
 
 export const AddBook = ({onAddBook}) => {
     const [book, setBookName] = useState('');
