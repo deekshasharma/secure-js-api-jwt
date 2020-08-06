@@ -5,7 +5,10 @@
     "key": "$2b$10$ph9/OK1lN/.9KzkeGKGPK.bxOkqJ2b9A2AqH/5iPkS7dmqAnUn.vi",
     "firstName": "Deeksha",
     "lastName": "Sharma",
-    "favorite": ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"],
+    "favorite": [
+      "6cc12b5e-cb5e-11ea-87d0-0242ac130003",
+      "765384e6-cb5e-11ea-87d0-0242ac130003"
+    ],
     "role": "member"
   },
   {
