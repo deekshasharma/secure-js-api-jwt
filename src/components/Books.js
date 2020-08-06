@@ -3,7 +3,7 @@ import {Button, Grid, Paper, Typography} from '@material-ui/core';
 import '../styles.css';
 import {AppHeader} from "./AppHeader";
 
-export const Books = ({onAddFavorite}) => {
+export const Books = () => {
     return <div className="Content">
         <AppHeader tabValue={0}/>
         <Grid container justify="center" alignItems="center" direction="column">
@@ -15,7 +15,7 @@ export const Books = ({onAddFavorite}) => {
             <Grid item container justify="center">
             {books.map((book, key) => {
                 return <Book key={key} name={book.name} id={book.id} author={book.author} color={book.color}
-                             onClick={onAddFavorite}/>
+                             onClick={() => console.log("My Favorite")}/>
             })}
             </Grid>
         </Grid>

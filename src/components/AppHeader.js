@@ -43,7 +43,6 @@ export const AppHeader = ({tabValue}) => {
                     <Menu
                         id="menu-appbar"
                         anchorEl={anchorEl}
-                        keepMounted
                         open={open}
                         onClose={handleClose}
                     >

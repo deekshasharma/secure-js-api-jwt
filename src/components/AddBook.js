@@ -3,7 +3,7 @@ import {Grid, Typography, Button, TextField, Snackbar} from '@material-ui/core';
 import '../styles.css';
 import {AppHeader} from "./AppHeader";
 
-export const AddBook = ({onAddBook}) => {
+export const AddBook = () => {
     const [book, setBookName] = useState('');
     const [author, setAuthorName] = useState('');
     const [bookAdded, setBookAdded] = useState(false);
@@ -11,7 +11,6 @@ export const AddBook = ({onAddBook}) => {
     const onChangeBookName = (book) => setBookName(book);
     const onChangeAuthorName = (author) => setAuthorName(author);
     const onClick = () => {
-        onAddBook(book, author);
         setBookAdded(true);
         setBookName('');
         setAuthorName('');
@@ -34,7 +33,9 @@ export const AddBook = ({onAddBook}) => {
                            onChange={e => onChangeBookName(e.target.value)}/>
             </Grid>
             <Grid item style={{marginBottom: "5vh"}}>
-                <TextField id="authorname-input" variant="outlined" label="author" value={author}
+                <TextField id="authorname-input"
+                           variant="outlined"
+                           label="author" value={author}
                            onChange={e => onChangeAuthorName(e.target.value)}/>
             </Grid>
             <Grid item style={{marginBottom: "7vh"}}>
