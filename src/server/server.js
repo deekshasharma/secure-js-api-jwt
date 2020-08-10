@@ -17,20 +17,6 @@ app.get("/users", (req, res) => {
     .catch((error) => console.error("Error retrieving users ", error.message));
 });
 
-// app.get('/books', verifyToken, (req, res) => {
-//   if (isAPIAccessAllowed(req.cookies.token, Constants.SHOW_BOOKS)) {
-//     getAllBooks()
-//         .then(books => {
-//           constructTokenResponse(req.cookies.token, null)
-//               .then((token) => {
-//                 res.cookie('token', token, {httpOnly: true});
-//                 res.status(200).send({books: books});
-//               })
-//         })
-//         .catch(error => console.error("Error retrieving books ", error.message));
-//   } else res.status(401).send({message: "You are not authorized to view books"});
-// });
-
 app.get("/books", (req, res) => {
   getAllBooks()
     .then((books) => {
