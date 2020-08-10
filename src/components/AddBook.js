@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
+const url = "http://localhost:5000/book";
 
 export const AddBook = () => {
   const [book, setBookName] = useState("");
@@ -16,10 +17,20 @@ export const AddBook = () => {
 
   const onChangeBookName = (book) => setBookName(book);
   const onChangeAuthorName = (author) => setAuthorName(author);
+
   const onClick = () => {
-    setBookAdded(true);
-    setBookName("");
-    setAuthorName("");
+    const bookData = { name: book, author: author };
+    fetch(url, {
+      headers: { "Content-type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(bookData),
+    }).then((res) => {
+      if (res.status === 200) {
+        setBookAdded(true);
+        setBookName("");
+        setAuthorName("");
+      }
+    });
   };
 
   const handleClose = () => setBookAdded(false);

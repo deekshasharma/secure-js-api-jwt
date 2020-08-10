@@ -1,6 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-const { isCredentialValid, getAllUsers, getAllBooks } = require("./shared");
+const { uuid } = require("uuidv4");
+const {
+  isCredentialValid,
+  getAllUsers,
+  getAllBooks,
+  addBook,
+} = require("./shared");
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -45,4 +51,11 @@ app.get("/logout", (req, res) => {});
 
 app.get("/favorite", (req, res) => {});
 
-app.post("/book", (req, res) => {});
+app.post("/book", (req, res) => {
+  addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(
+    (err) => {
+      if (err) res.status(500).send({ message: "Cannot add this book" });
+      else res.status(200).send({ message: "Book added successfully" });
+    }
+  );
+});
