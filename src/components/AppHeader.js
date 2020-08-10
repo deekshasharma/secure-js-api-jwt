@@ -29,37 +29,37 @@ export const AppHeader = ({ tabValue }) => {
 
   return (
     <div style={{ flexGrow: 1 }}>
-        <AppBar position="fixed">
-          <Toolbar>
-            <Tabs value={tabValue} onChange={handleClick}>
-              <Tab label="Books" />
-              <Tab label="Favorite" />
-              <Tab label="Add Book" />
-              <Tab label="Users" />
-            </Tabs>
-            <div style={{ flexGrow: 1 }} />
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem onClick={() => console.log("Clicked Logout!")}>
-                Logout
-              </MenuItem>
-            </Menu>
-          </Toolbar>
-        </AppBar>
+      <AppBar position="fixed">
+        <Toolbar>
+          <Tabs value={tabValue} onChange={handleClick}>
+            <Tab label="Books" />
+            <Tab label="Favorite" />
+            <Tab label="Add Book" />
+            <Tab label="Users" />
+          </Tabs>
+          <div style={{ flexGrow: 1 }} />
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem>{localStorage.getItem("userInfo")}</MenuItem>
+            <MenuItem onClick={() => console.log("Clicked Logout!")}>
+              Logout
+            </MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
     </div>
   );
 };
