@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+const loginUrl = "http://localhost:5000/login";
 
 export const AppHeader = ({ tabValue }) => {
   const tabs = ["/books", "/favorite", "/book", "/users"];
@@ -25,6 +26,11 @@ export const AppHeader = ({ tabValue }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const onClickLogout = () => {
+    localStorage.removeItem("userInfo");
+    history.push(loginUrl);
   };
 
   return (
@@ -54,7 +60,7 @@ export const AppHeader = ({ tabValue }) => {
             onClose={handleClose}
           >
             <MenuItem>{localStorage.getItem("userInfo")}</MenuItem>
-            <MenuItem onClick={() => console.log("Clicked Logout!")}>
+            <MenuItem onClick={onClickLogout}>
               Logout
             </MenuItem>
           </Menu>
