@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, Grid, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
+const url = "http://localhost:5000/users";
 
 export const Users = () => {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    fetch(url)
+      .then((res) => (res.status === 200 ? res.json() : null))
+      .then((json) => (json ? setUsers([...json.users]) : setUsers([])));
+  }, []);
+
   return (
     <div className="Content">
       <AppHeader tabValue={3} />
@@ -60,18 +68,3 @@ const User = ({ firstName, lastName, userName, role }) => {
     </Grid>
   );
 };
-
-const users = [
-  {
-    username: "deeksha30",
-    firstName: "Deeksha",
-    lastName: "Sharma",
-    role: "member",
-  },
-  {
-    firstName: "Amy",
-    username: "zenmade23",
-    lastName: "Robinson",
-    role: "admin",
-  },
-];

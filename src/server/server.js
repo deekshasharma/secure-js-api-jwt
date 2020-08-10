@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { isCredentialValid } = require("./shared");
+const { isCredentialValid, getAllUsers } = require("./shared");
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -8,7 +8,14 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 app.use(express.json());
 app.use(cors());
 
-app.get("/users", (req, res) => {});
+app.get("/users", (req, res) => {
+  getAllUsers()
+    .then((users) => {
+      if (users.length > 0) res.status(200).send({ users: users });
+      else res.status(500).send({ users: [] });
+    })
+    .catch((error) => console.error("Error retrieving users ", error.message));
+});
 
 app.get("/books", (req, res) => {});
 

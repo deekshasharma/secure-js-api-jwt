@@ -18,3 +18,17 @@ exports.isCredentialValid = async function (username, password) {
       .then((result) => (result ? user : result));
   } else return false;
 };
+
+exports.getAllUsers = async function () {
+  const allUsers = await jsonfile.readFile(users);
+  let updatedUsers = [];
+  allUsers.map((user) => {
+    updatedUsers.push({
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+    });
+  });
+  return updatedUsers;
+};

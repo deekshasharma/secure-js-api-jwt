@@ -31,8 +31,13 @@ export const Login = () => {
   };
 
   return (
-    <Grid container direction={"column"} alignItems={"center"} style={{marginTop: "10vh"}}>
-      <Grid item style={{marginBottom: "10vh"}}>
+    <Grid
+      container
+      direction={"column"}
+      alignItems={"center"}
+      style={{ marginTop: "10vh" }}
+    >
+      <Grid item style={{ marginBottom: "10vh" }}>
         <Typography variant={"h3"}>
           Welcome to Bookie!
           <span role={"img"} aria-label={"books"}>
@@ -40,7 +45,7 @@ export const Login = () => {
           </span>
         </Typography>
       </Grid>
-      <Grid item style={{marginBottom: "5vh"}}>
+      <Grid item style={{ marginBottom: "5vh" }}>
         <TextField
           id={"username-input"}
           label={"username"}
@@ -48,7 +53,7 @@ export const Login = () => {
           onChange={(e) => onChangeUsername(e.target.value)}
         />
       </Grid>
-      <Grid item style={{marginBottom: "7vh"}}>
+      <Grid item style={{ marginBottom: "7vh" }}>
         <TextField
           id={"password-input"}
           label={"password"}
@@ -57,7 +62,7 @@ export const Login = () => {
           onChange={(e) => onChangePassword(e.target.value)}
         />
       </Grid>
-      <Grid item style={{marginBottom: "7vh"}}>
+      <Grid item style={{ marginBottom: "7vh" }}>
         <Button
           aria-label={"login"}
           variant={"contained"}
