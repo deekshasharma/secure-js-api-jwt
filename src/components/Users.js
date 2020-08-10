@@ -6,6 +6,7 @@ const url = "http://localhost:5000/users";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
+
   useEffect(() => {
     fetch(url)
       .then((res) => (res.status === 200 ? res.json() : null))

@@ -1,5 +1,6 @@
 const jsonfile = require("jsonfile");
 const users = "./database/users.json";
+const inventory = './database/books.json';
 const bcrypt = require("bcrypt");
 
 getUserByUsername = async function (username) {
@@ -31,4 +32,8 @@ exports.getAllUsers = async function () {
     });
   });
   return updatedUsers;
+};
+
+exports.getAllBooks = async function () {
+  return await jsonfile.readFile(inventory);
 };
