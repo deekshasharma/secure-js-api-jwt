@@ -9,7 +9,7 @@ import {
   Menu,
   Toolbar,
 } from "@material-ui/core";
-import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 
 export const AppHeader = ({ tabValue }) => {
@@ -29,7 +29,6 @@ export const AppHeader = ({ tabValue }) => {
 
   return (
     <div style={{ flexGrow: 1 }}>
-      <Router>
         <AppBar position="fixed">
           <Toolbar>
             <Tabs value={tabValue} onChange={handleClick}>
@@ -61,7 +60,6 @@ export const AppHeader = ({ tabValue }) => {
             </Menu>
           </Toolbar>
         </AppBar>
-      </Router>
     </div>
   );
 };
