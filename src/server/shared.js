@@ -43,3 +43,12 @@ exports.addBook = async function (book) {
   allBooks.push(book);
   return await jsonfile.writeFile(inventory, allBooks);
 };
+
+exports.getFavoriteBooks = async function (username) {
+  const user = await getUserByUsername(username);
+  const favoriteBookIds = user['favorite'];
+  const allBooks = await jsonfile.readFile(inventory);
+  const favoriteBooks = [];
+  favoriteBookIds.map(id => favoriteBooks.push(allBooks.filter(book => id === book.id)[0]));
+  return favoriteBooks;
+};
