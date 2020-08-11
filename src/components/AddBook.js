@@ -13,7 +13,8 @@ const url = "http://localhost:5000/book";
 export const AddBook = () => {
   const [book, setBookName] = useState("");
   const [author, setAuthorName] = useState("");
-  const [bookAdded, setBookAdded] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const onChangeBookName = (book) => setBookName(book);
   const onChangeAuthorName = (author) => setAuthorName(author);
@@ -26,14 +27,18 @@ export const AddBook = () => {
       body: JSON.stringify(bookData),
     }).then((res) => {
       if (res.status === 200) {
-        setBookAdded(true);
+        setOpen(true);
         setBookName("");
         setAuthorName("");
+        setMessage("The book is added!");
+      } else {
+        setOpen(true);
+        setMessage(res.json().message);
       }
     });
   };
 
-  const handleClose = () => setBookAdded(false);
+  const handleClose = () => setOpen(false);
 
   return (
     <div className="AddBook">
@@ -78,8 +83,8 @@ export const AddBook = () => {
         </Grid>
         <Grid>
           <Snackbar
-            open={bookAdded}
-            message="The book is added!"
+            open={open}
+            message={message}
             autoHideDuration={2000}
             onClose={handleClose}
           />

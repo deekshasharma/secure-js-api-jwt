@@ -11,6 +11,11 @@ getUserByUsername = async function (username) {
   return filteredUserArray.length === 0 ? null : filteredUserArray[0];
 };
 
+//TODO: Refactor this function
+/**
+ * Change the name - Get user if valid
+ * Return a null object or user instead of falsy value
+ */
 exports.isCredentialValid = async function (username, password) {
   const user = await getUserByUsername(username);
   if (user) {
@@ -21,17 +26,21 @@ exports.isCredentialValid = async function (username, password) {
 };
 
 exports.getAllUsers = async function () {
-  const allUsers = await jsonfile.readFile(users);
-  let updatedUsers = [];
-  allUsers.map((user) => {
-    updatedUsers.push({
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
+  try {
+    const allUsers = await jsonfile.readFile(users);
+    let updatedUsers = [];
+    allUsers.forEach((user) => {
+      updatedUsers.push({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      });
     });
-  });
-  return updatedUsers;
+    return updatedUsers;
+  } catch (err) {
+    console.log("Error retrieving users: ", err.message);
+  }
 };
 
 exports.getAllBooks = async function () {
@@ -46,9 +55,11 @@ exports.addBook = async function (book) {
 
 exports.getFavoriteBooks = async function (username) {
   const user = await getUserByUsername(username);
-  const favoriteBookIds = user['favorite'];
+  const favoriteBookIds = user["favorite"];
   const allBooks = await jsonfile.readFile(inventory);
   const favoriteBooks = [];
-  favoriteBookIds.map(id => favoriteBooks.push(allBooks.filter(book => id === book.id)[0]));
+  favoriteBookIds.forEach((id) =>
+    favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
+  );
   return favoriteBooks;
 };

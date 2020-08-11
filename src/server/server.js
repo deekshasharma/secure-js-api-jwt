@@ -17,10 +17,10 @@ app.use(cors());
 app.get("/users", (req, res) => {
   getAllUsers()
     .then((users) => {
-      if (users.length > 0) res.status(200).send({ users: users });
+      if (users && users.length > 0) res.status(200).send({ users: users });
       else res.status(500).send({ users: [] });
     })
-    .catch((error) => console.error("Error retrieving users ", error.message));
+    .catch((error) => console.log("Error in /users api ",error));
 });
 
 app.get("/books", (req, res) => {

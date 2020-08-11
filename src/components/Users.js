@@ -10,7 +10,8 @@ export const Users = () => {
   useEffect(() => {
     fetch(url)
       .then((res) => (res.status === 200 ? res.json() : null))
-      .then((json) => (json ? setUsers([...json.users]) : setUsers([])));
+      .then((json) => (json ? setUsers([...json.users]) : setUsers([])))
+      .catch((err) => console.log(err));
   }, []);
 
   return (
