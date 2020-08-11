@@ -20,16 +20,8 @@ export const Login = () => {
       "Basic " + base64.encode(userName + ":" + password)
     );
     fetch(url, { headers: headers, method: "POST" })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        else return null;
-      })
-      .then((json) => {
-        if (json) {
-          localStorage.setItem("userInfo", json.user.username);
-          history.push("/books");
-        } else setLoginError("username or password is incorrect!");
-      })
+      .then((res) => (res.status === 200 ? history.push("/books") : res.json()))
+      .then((json) => setLoginError(json.message))
       .catch((err) => console.log("Error logging into app ", err.message));
   };
 
