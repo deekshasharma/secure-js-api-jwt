@@ -48,9 +48,13 @@ exports.getAllBooks = async function () {
 };
 
 exports.addBook = async function (book) {
-  const allBooks = await jsonfile.readFile(inventory);
-  allBooks.push(book);
-  return await jsonfile.writeFile(inventory, allBooks);
+  try {
+    const allBooks = await jsonfile.readFile(inventory);
+    allBooks.push(book);
+    return await jsonfile.writeFile(inventory, allBooks);
+  } catch (err) {
+    console.log("Error adding new book: ", err);
+  }
 };
 
 exports.getFavoriteBooks = async function (username) {

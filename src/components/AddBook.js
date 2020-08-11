@@ -25,17 +25,19 @@ export const AddBook = () => {
       headers: { "Content-type": "application/json" },
       method: "POST",
       body: JSON.stringify(bookData),
-    }).then((res) => {
-      if (res.status === 200) {
-        setOpen(true);
-        setBookName("");
-        setAuthorName("");
-        setMessage("The book is added!");
-      } else {
-        setOpen(true);
-        setMessage(res.json().message);
-      }
-    });
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setOpen(true);
+          setBookName("");
+          setAuthorName("");
+          setMessage("The book is added!");
+        } else {
+          setOpen(true);
+          setMessage(res.json().message);
+        }
+      })
+      .catch((err) => console.log("Cannot add new book: ", err));
   };
 
   const handleClose = () => setOpen(false);

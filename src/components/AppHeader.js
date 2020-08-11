@@ -28,10 +28,7 @@ export const AppHeader = ({ tabValue }) => {
     setAnchorEl(null);
   };
 
-  const onClickLogout = () => {
-    localStorage.removeItem("userInfo");
-    history.push(loginUrl);
-  };
+  const onClickLogout = () => {};
 
   return (
     <div style={{ flexGrow: 1 }}>
@@ -60,9 +57,7 @@ export const AppHeader = ({ tabValue }) => {
             onClose={handleClose}
           >
             <MenuItem>{localStorage.getItem("userInfo")}</MenuItem>
-            <MenuItem onClick={onClickLogout}>
-              Logout
-            </MenuItem>
+            <MenuItem onClick={onClickLogout}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
