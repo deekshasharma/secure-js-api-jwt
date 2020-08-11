@@ -3,26 +3,18 @@ const users = "./database/users.json";
 const inventory = "./database/books.json";
 const bcrypt = require("bcrypt");
 
-getUserByUsername = async function (username) {
+exports.getUserByUsername = async function (username) {
   const allUsers = await jsonfile.readFile(users);
   const filteredUserArray = allUsers.filter(
     (user) => user.username === username
   );
-  return filteredUserArray.length === 0 ? null : filteredUserArray[0];
+  return filteredUserArray.length === 0 ? {} : filteredUserArray[0];
 };
 
-//TODO: Refactor this function
-/**
- * Change the name - Get user if valid
- * Return a null object or user instead of falsy value
- */
-exports.isCredentialValid = async function (username, password) {
-  const user = await getUserByUsername(username);
-  if (user) {
-    return bcrypt
-      .compare(password, user.key)
-      .then((result) => (result ? user : result));
-  } else return false;
+exports.isEmptyObject = (object) => Object.entries(object).length === 0;
+
+exports.isPasswordCorrect = async function (key, password) {
+  return bcrypt.compare(password, key).then((result) => result);
 };
 
 exports.getAllUsers = async function () {

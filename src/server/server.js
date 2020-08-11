@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const { uuid } = require("uuidv4");
 const {
-  isCredentialValid,
+  getUserByUsername,
+  isEmptyObject,
+  isPasswordCorrect,
   getAllUsers,
   getAllBooks,
   addBook,
@@ -20,7 +22,7 @@ app.get("/users", (req, res) => {
       if (users && users.length > 0) res.status(200).send({ users: users });
       else res.status(500).send({ users: [] });
     })
-    .catch((error) => console.log("Error in /users api ",error));
+    .catch((error) => console.log("Error in /users api ", error));
 });
 
 app.get("/books", (req, res) => {
@@ -37,13 +39,17 @@ app.post("/login", (req, res) => {
   let credentials = Buffer.from(base64Encoding, "base64").toString().split(":");
   const username = credentials[0];
   const password = credentials[1];
-  isCredentialValid(username, password).then((result) => {
-    if (!result)
+  getUserByUsername(username).then((user) => {
+    if (user && !isEmptyObject(user)) {
+      isPasswordCorrect(user.key, password).then((result) => {
+        result
+          ? res.status(200).send({ username: user.username, role: user.role })
+          : res
+              .status(401)
+              .send({ message: "username or password is incorrect" });
+      });
+    } else
       res.status(401).send({ message: "username or password is incorrect" });
-    else
-      res
-        .status(200)
-        .send({ user: { username: result.username, role: result.role } });
   });
 });
 
