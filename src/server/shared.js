@@ -58,12 +58,16 @@ exports.addBook = async function (book) {
 };
 
 exports.getFavoriteBooks = async function (username) {
-  const user = await getUserByUsername(username);
-  const favoriteBookIds = user["favorite"];
-  const allBooks = await jsonfile.readFile(inventory);
-  const favoriteBooks = [];
-  favoriteBookIds.forEach((id) =>
-    favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
-  );
-  return favoriteBooks;
+  try {
+    const user = await getUserByUsername(username);
+    const favoriteBookIds = user["favorite"];
+    const allBooks = await jsonfile.readFile(inventory);
+    const favoriteBooks = [];
+    favoriteBookIds.forEach((id) =>
+      favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
+    );
+    return favoriteBooks;
+  } catch (err) {
+    console.log("Error retrieving favorite books: ", err);
+  }
 };
