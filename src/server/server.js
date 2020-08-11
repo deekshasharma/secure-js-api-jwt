@@ -22,16 +22,16 @@ app.get("/users", (req, res) => {
       if (users && users.length > 0) res.status(200).send({ users: users });
       else res.status(500).send({ users: [] });
     })
-    .catch((error) => console.log("Error in /users api ", error));
+    .catch((error) => console.log("Error in /users api: ", error));
 });
 
 app.get("/books", (req, res) => {
   getAllBooks()
     .then((books) => {
-      if (books.length > 0) res.status(200).send({ books: books });
+      if (books && books.length > 0) res.status(200).send({ books: books });
       else res.status(500).send({ books: [] });
     })
-    .catch((error) => console.error("Error retrieving books ", error.message));
+    .catch((error) => console.error("Error in /books api: ", error.message));
 });
 
 app.post("/login", (req, res) => {

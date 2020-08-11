@@ -4,11 +4,15 @@ const inventory = "./database/books.json";
 const bcrypt = require("bcrypt");
 
 exports.getUserByUsername = async function (username) {
-  const allUsers = await jsonfile.readFile(users);
-  const filteredUserArray = allUsers.filter(
-    (user) => user.username === username
-  );
-  return filteredUserArray.length === 0 ? {} : filteredUserArray[0];
+  try {
+    const allUsers = await jsonfile.readFile(users);
+    const filteredUserArray = allUsers.filter(
+      (user) => user.username === username
+    );
+    return filteredUserArray.length === 0 ? {} : filteredUserArray[0];
+  } catch (err) {
+    console.log("Error reading users: ", err.message);
+  }
 };
 
 exports.isEmptyObject = (object) => Object.entries(object).length === 0;
@@ -36,7 +40,11 @@ exports.getAllUsers = async function () {
 };
 
 exports.getAllBooks = async function () {
-  return await jsonfile.readFile(inventory);
+  try {
+    return await jsonfile.readFile(inventory);
+  } catch (err) {
+    console.log("Error reading books: ", err);
+  }
 };
 
 exports.addBook = async function (book) {
