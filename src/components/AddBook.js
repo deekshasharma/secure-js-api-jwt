@@ -27,17 +27,15 @@ export const AddBook = () => {
       body: JSON.stringify(bookData),
     })
       .then((res) => {
+        setOpen(true);
         if (res.status === 200) {
-          setOpen(true);
           setBookName("");
           setAuthorName("");
-          setMessage("The book is added!");
-        } else {
-          setOpen(true);
-          setMessage(res.json().message);
         }
+        return res.json();
       })
-      .catch((err) => console.log("Cannot add new book: ", err));
+      .then((json) => setMessage(json.message))
+      .catch((err) => console.log("Error adding book ", err.message));
   };
 
   const handleClose = () => setOpen(false);

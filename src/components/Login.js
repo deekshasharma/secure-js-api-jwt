@@ -12,7 +12,7 @@ export const Login = () => {
 
   const onChangeUsername = (username) => setUserName(username);
   const onChangePassword = (password) => setPassword(password);
-  let history = useHistory();
+  const history = useHistory();
 
   const onClickLogin = () => {
     headers.set(

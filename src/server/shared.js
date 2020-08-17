@@ -21,6 +21,14 @@ exports.isPasswordCorrect = async function (key, password) {
   return bcrypt.compare(password, key).then((result) => result);
 };
 
+exports.getAllBooks = async function () {
+  try {
+    return await jsonfile.readFile(inventory);
+  } catch (err) {
+    console.log("Error reading books: ", err);
+  }
+};
+
 exports.getAllUsers = async function () {
   try {
     const allUsers = await jsonfile.readFile(users);
@@ -35,15 +43,7 @@ exports.getAllUsers = async function () {
     });
     return updatedUsers;
   } catch (err) {
-    console.log("Error retrieving users: ", err.message);
-  }
-};
-
-exports.getAllBooks = async function () {
-  try {
-    return await jsonfile.readFile(inventory);
-  } catch (err) {
-    console.log("Error reading books: ", err);
+    console.log("Error reading users from datastore ", err.message);
   }
 };
 
@@ -53,21 +53,6 @@ exports.addBook = async function (book) {
     allBooks.push(book);
     return await jsonfile.writeFile(inventory, allBooks);
   } catch (err) {
-    console.log("Error adding new book: ", err);
-  }
-};
-
-exports.getFavoriteBooks = async function (username) {
-  try {
-    const user = await getUserByUsername(username);
-    const favoriteBookIds = user["favorite"];
-    const allBooks = await jsonfile.readFile(inventory);
-    const favoriteBooks = [];
-    favoriteBookIds.forEach((id) =>
-      favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
-    );
-    return favoriteBooks;
-  } catch (err) {
-    console.log("Error retrieving favorite books: ", err);
+    return err;
   }
 };

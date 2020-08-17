@@ -5,13 +5,12 @@ const {
   getUserByUsername,
   isEmptyObject,
   isPasswordCorrect,
-  getAllUsers,
   getAllBooks,
+  getAllUsers,
   addBook,
 } = require("./shared");
-
-const port = process.env.PORT || 5000;
 const app = express();
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
 app.use(express.json());
 app.use(cors());
@@ -21,8 +20,7 @@ app.get("/users", (req, res) => {
     .then((users) => {
       if (users && users.length > 0) res.status(200).send({ users: users });
       else res.status(500).send({ users: [] });
-    })
-    .catch((error) => console.log("Error in /users api: ", error));
+  });
 });
 
 app.get("/books", (req, res) => {
@@ -30,8 +28,7 @@ app.get("/books", (req, res) => {
     .then((books) => {
       if (books && books.length > 0) res.status(200).send({ books: books });
       else res.status(500).send({ books: [] });
-    })
-    .catch((error) => console.error("Error in /books api: ", error.message));
+  });
 });
 
 app.post("/login", (req, res) => {

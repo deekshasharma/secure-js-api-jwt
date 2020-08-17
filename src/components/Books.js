@@ -9,8 +9,9 @@ export const Books = () => {
 
   useEffect(() => {
     fetch(url)
-      .then((res) => (res.status === 200 ? res.json() : null))
-      .then((json) => (json ? setBooks([...json.books]) : setBooks([])));
+      .then((res) => res.json())
+      .then((json) => setBooks([...json.books]))
+      .catch((err) => console.log("Error fetching books ", err.message));
   }, []);
 
   return (
