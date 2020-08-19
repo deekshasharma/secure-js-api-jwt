@@ -17,7 +17,7 @@ export const AppHeader = ({ tabValue }) => {
   const tabs = ["/books", "/favorite", "/book", "/users"];
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  let history = useHistory();
+  const history = useHistory();
 
   const handleClick = (event, newValue) => history.push(tabs[newValue]);
 
@@ -28,7 +28,10 @@ export const AppHeader = ({ tabValue }) => {
   };
 
   const onClickLogout = () => {
-    fetch(url).then((res) => history.push("/login"));
+    fetch(url).then((res) => {
+      localStorage.removeItem("displayName");
+      history.push("/login");
+    });
   };
 
   return (
@@ -57,7 +60,7 @@ export const AppHeader = ({ tabValue }) => {
             open={open}
             onClose={handleClose}
           >
-            <MenuItem>Profile</MenuItem>
+            <MenuItem>{localStorage.displayName}</MenuItem>
             <MenuItem onClick={onClickLogout}>Logout</MenuItem>
           </Menu>
         </Toolbar>

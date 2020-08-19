@@ -9,20 +9,23 @@ export const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const history = useHistory();
 
   const onChangeUsername = (username) => setUserName(username);
   const onChangePassword = (password) => setPassword(password);
-  const history = useHistory();
-
   const onClickLogin = () => {
     headers.set(
       "Authorization",
       "Basic " + base64.encode(userName + ":" + password)
     );
     fetch(url, { headers: headers, method: "POST" })
-      .then((res) => (res.status === 200 ? history.push("/books") : res.json()))
-      .then((json) => {
-        if (json) setLoginError(json.message);
+      .then((res) => {
+        if (res.status === 200) history.push("/books");
+        return res.json();
+      })
+      .then((result) => {
+        if (result.message) setLoginError(result.message);
+        else localStorage.setItem("displayName", result.username);
       })
       .catch((err) => console.log("Error logging into app ", err.message));
   };
