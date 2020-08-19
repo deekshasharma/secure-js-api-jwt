@@ -12,6 +12,7 @@ const {
   addBook,
   constructTokenResponse,
   verifyToken,
+  getFavoriteBooksForUser,
 } = require("./shared");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -71,7 +72,14 @@ app.get("/logout", verifyToken, (req, res) => {
   res.status(200).send({ message: "Cookies cleared" });
 });
 
-app.get("/favorite", verifyToken, (req, res) => {});
+app.get("/favorite", verifyToken, (req, res) => {
+  getFavoriteBooksForUser(req.cookies.token).then((books) => {
+    constructTokenResponse(req.cookies.token, null).then((token) => {
+      res.cookie("token", token, { httpOnly: true });
+      res.status(200).send({ favorites: books });
+    });
+  });
+});
 
 app.post("/book", verifyToken, (req, res) => {
   addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(

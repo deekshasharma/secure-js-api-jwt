@@ -62,17 +62,18 @@ exports.addBook = async function (book) {
 const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
 
 const generateToken = (username, role) => {
-  const payload = {
+  const payload = {};
+  const options = {
     algorithm: process.env.ALGORITHM,
     expiresIn: process.env.EXPIRY,
     issuer: process.env.ISSUER,
+    subject: username,
     audience:
       role === "admin"
         ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE
         : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
-    subject: username,
   };
-  return jwt.sign(payload, process.env.SECRET);
+  return jwt.sign(payload, process.env.SECRET, options);
 };
 
 exports.constructTokenResponse = async function (token, userName) {
@@ -87,6 +88,7 @@ exports.verifyToken = (req, res, next) => {
     res.status(401).send({ message: "Not Authorized to access data" });
   else {
     jwt.verify(token, process.env.SECRET, function (err, decode) {
+      console.log({ decode });
       if (err)
         res
           .status(401)
@@ -94,4 +96,16 @@ exports.verifyToken = (req, res, next) => {
       else next();
     });
   }
+};
+
+exports.getFavoriteBooksForUser = async function (token) {
+  const username = getUsernameFromToken(token);
+  const user = await getUserByUsername(username);
+  const favoriteBookIds = user["favorite"];
+  const allBooks = await jsonfile.readFile(inventory);
+  const favoriteBooks = [];
+  favoriteBookIds.forEach((id) =>
+    favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
+  );
+  return favoriteBooks;
 };
