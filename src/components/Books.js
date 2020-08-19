@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Grid, Paper, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
-const url = "http://localhost:5000/books";
+const url = "/books";
 
 export const Books = () => {
   const [books, setBooks] = useState([]);

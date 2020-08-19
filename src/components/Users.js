@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Avatar, Grid, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
-const url = "http://localhost:5000/users";
+const url = "/users";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
@@ -12,7 +12,7 @@ export const Users = () => {
       .then((res) => res.json())
       .then((json) => setUsers([...json.users]))
       .catch((err) => console.log("Error fetching users ", err.message));
-  });
+  }, []);
 
   return (
     <div className="Content">

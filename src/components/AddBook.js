@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
-const url = "http://localhost:5000/book";
+const url = "/book";
 
 export const AddBook = () => {
   const [book, setBookName] = useState("");
