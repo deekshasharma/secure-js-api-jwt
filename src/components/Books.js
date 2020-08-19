@@ -12,10 +12,12 @@ export const Books = () => {
   useEffect(() => {
     fetch(url)
       .then((res) => {
-        if (res.status === 200) return res.json();
-        else history.push("/login");
+        if (res.status === 401) history.push("/login");
+        else return res.json();
       })
-      .then((json) => setBooks([...json.books]))
+      .then((json) => {
+        if (json) setBooks([...json.books]);
+      })
       .catch((err) => console.log("Error fetching books ", err.message));
   }, []);
 

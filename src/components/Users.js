@@ -12,10 +12,12 @@ export const Users = () => {
   useEffect(() => {
     fetch(url)
       .then((res) => {
-        if (res.status === 200) return res.json();
-        else history.push("/login");
+        if (res.status === 401) history.push("/login");
+        else return res.json();
       })
-      .then((json) => setUsers([...json.users]))
+      .then((json) => {
+        if (json) setUsers([...json.users]);
+      })
       .catch((err) => console.log("Error fetching users ", err.message));
   }, []);
 

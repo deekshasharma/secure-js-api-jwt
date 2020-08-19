@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
+import { useHistory } from "react-router-dom";
 const url = "/book";
 
 export const AddBook = () => {
@@ -15,6 +16,7 @@ export const AddBook = () => {
   const [author, setAuthorName] = useState("");
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const history = useHistory();
 
   const onChangeBookName = (book) => setBookName(book);
   const onChangeAuthorName = (author) => setAuthorName(author);
@@ -27,14 +29,19 @@ export const AddBook = () => {
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        setOpen(true);
-        if (res.status === 200) {
-          setBookName("");
-          setAuthorName("");
+        if (res.status === 401) history.push("/login");
+        else {
+          setOpen(true);
+          if (res.status === 200) {
+            setBookName("");
+            setAuthorName("");
+          }
+          return res.json();
         }
-        return res.json();
       })
-      .then((json) => setMessage(json.message))
+      .then((json) => {
+        if (json) setMessage(json.message);
+      })
       .catch((err) => console.log("Error adding book ", err.message));
   };
 

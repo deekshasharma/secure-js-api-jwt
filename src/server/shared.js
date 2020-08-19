@@ -89,11 +89,12 @@ exports.verifyToken = (req, res, next) => {
   else {
     jwt.verify(token, process.env.SECRET, function (err, decode) {
       console.log({ decode });
-      if (err)
+      if (err) {
+        res.clearCookie("token");
         res
           .status(401)
           .send({ message: "Please login again! Your session has expired" });
-      else next();
+      } else next();
     });
   }
 };
@@ -102,8 +103,9 @@ exports.getFavoriteBooksForUser = async function (token) {
   const username = getUsernameFromToken(token);
   const user = await getUserByUsername(username);
   const favoriteBookIds = user["favorite"];
-  const allBooks = await jsonfile.readFile(inventory);
   const favoriteBooks = [];
+  if (favoriteBookIds.length === 0) return favoriteBooks;
+  const allBooks = await jsonfile.readFile(inventory);
   favoriteBookIds.forEach((id) =>
     favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
   );

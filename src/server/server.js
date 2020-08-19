@@ -85,7 +85,12 @@ app.post("/book", verifyToken, (req, res) => {
   addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(
     (err) => {
       if (err) res.status(500).send({ message: "Cannot add this book" });
-      else res.status(200).send({ message: "Book added successfully" });
+      else {
+        constructTokenResponse(req.cookies.token, null).then((token) => {
+          res.cookie("token", token, { httpOnly: true });
+          res.status(200).send({ message: "Book added successfully" });
+        });
+      }
     }
   );
 });
