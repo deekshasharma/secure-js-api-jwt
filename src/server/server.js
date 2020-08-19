@@ -2,6 +2,7 @@ require("dotenv").config({ path: "./variables.env" });
 const express = require("express");
 const { uuid } = require("uuidv4");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const {
   getUserByUsername,
   isEmptyObject,
@@ -13,6 +14,7 @@ const {
   verifyToken,
   getFavoriteBooksForUser,
 } = require("./shared");
+const Constants = require("./constants");
 const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
@@ -20,14 +22,16 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/users", verifyToken, (req, res) => {
-  getAllUsers().then((users) => {
-    if (users && users.length > 0) {
-      constructTokenResponse(req.cookies.token, null).then((token) => {
-        res.cookie("token", token, { httpOnly: true });
-        res.status(200).send({ users: users });
-      });
-    } else res.status(500).send({ users: [] });
-  });
+  if (jwt.decode(req.cookies.token)["aud"].includes(Constants.SHOW_USERS)) {
+    getAllUsers().then((users) => {
+      if (users && users.length > 0) {
+        constructTokenResponse(req.cookies.token, null).then((token) => {
+          res.cookie("token", token, { httpOnly: true });
+          res.status(200).send({ users: users });
+        });
+      } else res.status(500).send({ users: [] });
+    });
+  } else res.status(403).send({ message: "Not authorized to view users" });
 });
 
 app.get("/books", verifyToken, (req, res) => {
@@ -80,15 +84,17 @@ app.get("/favorite", verifyToken, (req, res) => {
 });
 
 app.post("/book", verifyToken, (req, res) => {
-  addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(
-    (err) => {
-      if (err) res.status(500).send({ message: "Cannot add this book" });
-      else {
-        constructTokenResponse(req.cookies.token, null).then((token) => {
-          res.cookie("token", token, { httpOnly: true });
-          res.status(200).send({ message: "Book added successfully" });
-        });
+  if (jwt.decode(req.cookies.token)["aud"].includes(Constants.ADD_BOOK)) {
+    addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(
+      (err) => {
+        if (err) res.status(500).send({ message: "Cannot add this book" });
+        else {
+          constructTokenResponse(req.cookies.token, null).then((token) => {
+            res.cookie("token", token, { httpOnly: true });
+            res.status(200).send({ message: "Book added successfully" });
+          });
+        }
       }
-    }
-  );
+    );
+  } else res.status(403).send({ message: "Not authorized to add a book" });
 });

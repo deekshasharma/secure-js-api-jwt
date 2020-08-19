@@ -87,8 +87,7 @@ exports.verifyToken = (req, res, next) => {
   if (!token)
     res.status(401).send({ message: "Not Authorized to access data" });
   else {
-    jwt.verify(token, process.env.SECRET, function (err, decode) {
-      console.log({ decode });
+    jwt.verify(token, process.env.SECRET, function (err) {
       if (err) {
         res.clearCookie("token");
         res
