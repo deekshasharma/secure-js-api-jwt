@@ -31,7 +31,7 @@ app.get("/users", verifyToken, (req, res) => {
   });
 });
 
-app.get("/books", (req, res) => {
+app.get("/books", verifyToken, (req, res) => {
   getAllBooks().then((books) => {
     if (books && books.length > 0) {
       constructTokenResponse(req.cookies.token, null).then((token) => {
@@ -66,7 +66,10 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/logout", verifyToken, (req, res) => {});
+app.get("/logout", verifyToken, (req, res) => {
+  res.clearCookie("token");
+  res.status(200).send({ message: "Cookies cleared" });
+});
 
 app.get("/favorite", verifyToken, (req, res) => {});
 

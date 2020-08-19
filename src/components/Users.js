@@ -2,14 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Avatar, Grid, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
+import { useHistory } from "react-router-dom";
 const url = "/users";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     fetch(url)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        else history.push("/login");
+      })
       .then((json) => setUsers([...json.users]))
       .catch((err) => console.log("Error fetching users ", err.message));
   }, []);

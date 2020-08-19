@@ -2,14 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Button, Grid, Paper, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
+import { useHistory } from "react-router-dom";
 const url = "/books";
 
 export const Books = () => {
   const [books, setBooks] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     fetch(url)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        else history.push("/login");
+      })
       .then((json) => setBooks([...json.books]))
       .catch((err) => console.log("Error fetching books ", err.message));
   }, []);

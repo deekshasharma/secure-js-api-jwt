@@ -62,7 +62,6 @@ exports.addBook = async function (book) {
 const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
 
 const generateToken = (username, role) => {
-  // const payload = { data: username };
   const payload = {
     algorithm: process.env.ALGORITHM,
     expiresIn: process.env.EXPIRY,
