@@ -1,6 +1,5 @@
 require("dotenv").config({ path: "./variables.env" });
 const express = require("express");
-const cors = require("cors");
 const { uuid } = require("uuidv4");
 const cookieParser = require("cookie-parser");
 const {
@@ -18,7 +17,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser());
 
 app.get("/users", verifyToken, (req, res) => {
