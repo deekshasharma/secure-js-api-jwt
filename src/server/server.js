@@ -2,7 +2,6 @@ require("dotenv").config({ path: "./variables.env" });
 const express = require("express");
 const { uuid } = require("uuidv4");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const {
   getUserByUsername,
   isEmptyObject,
@@ -13,6 +12,7 @@ const {
   constructTokenResponse,
   verifyToken,
   getFavoriteBooksForUser,
+  getAudienceFromToken,
 } = require("./shared");
 const Constants = require("./constants");
 const app = express();
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/users", verifyToken, (req, res) => {
-  if (jwt.decode(req.cookies.token)["aud"].includes(Constants.SHOW_USERS)) {
+  if (getAudienceFromToken(req.cookies.token).includes(Constants.SHOW_USERS)) {
     getAllUsers().then((users) => {
       if (users && users.length > 0) {
         constructTokenResponse(req.cookies.token, null).then((token) => {
@@ -84,7 +84,7 @@ app.get("/favorite", verifyToken, (req, res) => {
 });
 
 app.post("/book", verifyToken, (req, res) => {
-  if (jwt.decode(req.cookies.token)["aud"].includes(Constants.ADD_BOOK)) {
+  if (getAudienceFromToken(req.cookies.token).includes(Constants.ADD_BOOK)) {
     addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(
       (err) => {
         if (err) res.status(500).send({ message: "Cannot add this book" });

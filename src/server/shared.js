@@ -61,6 +61,8 @@ exports.addBook = async function (book) {
 
 const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
 
+exports.getAudienceFromToken = (token) => jwt.decode(token)["aud"];
+
 const generateToken = (username, role) => {
   const payload = {};
   const options = {

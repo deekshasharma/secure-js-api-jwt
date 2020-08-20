@@ -10,9 +10,5 @@ module.exports.JWT_OPTIONS = {
   ],
 };
 
-module.exports.SHOW_BOOKS = "SHOW_BOOKS";
-module.exports.SHOW_FAVORITE = "SHOW_FAVORITE";
-module.exports.LOGOUT = "LOGOUT";
-module.exports.LOGIN = "LOGIN";
 module.exports.ADD_BOOK = "ADD_BOOK";
 module.exports.SHOW_USERS = "SHOW_USERS";
