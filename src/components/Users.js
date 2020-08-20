@@ -8,12 +8,15 @@ const url = "/users";
 export const Users = () => {
   const [users, setUsers] = useState([]);
   const history = useHistory();
+  const showPage = localStorage.getItem("role") === "admin";
 
   useEffect(() => {
     fetch(url)
       .then((res) => {
-        if (res.status === 401) history.push("/login");
-        else return res.json();
+        if (res.status === 401) {
+          localStorage.clear();
+          history.push("/login");
+        } else return res.json();
       })
       .then((json) => {
         if (json) setUsers([...json.users]);
@@ -24,29 +27,32 @@ export const Users = () => {
   return (
     <div className="Content">
       <AppHeader tabValue={3} />
-      <Grid container justify="center" direction="column" alignItems="center">
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <Typography variant="h3" gutterBottom>
-            Bookie Users!
-            <span role="img" aria-label="books">
-              🤓🤠
-            </span>
-          </Typography>
+      {!showPage && <div />}
+      {showPage && (
+        <Grid container justify="center" direction="column" alignItems="center">
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <Typography variant="h3" gutterBottom>
+              Bookie Users!
+              <span role="img" aria-label="books">
+                🤓🤠
+              </span>
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            {users.map((user, key) => {
+              return (
+                <User
+                  key={key}
+                  userName={user.username}
+                  firstName={user.firstName}
+                  lastName={user.lastName}
+                  role={user.role}
+                />
+              );
+            })}
+          </Grid>
         </Grid>
-        <Grid item xs={4}>
-          {users.map((user, key) => {
-            return (
-              <User
-                key={key}
-                userName={user.username}
-                firstName={user.firstName}
-                lastName={user.lastName}
-                role={user.role}
-              />
-            );
-          })}
-        </Grid>
-      </Grid>
+      )}
     </div>
   );
 };

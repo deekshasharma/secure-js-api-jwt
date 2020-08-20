@@ -18,6 +18,7 @@ export const AppHeader = ({ tabValue }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
+  const shouldDisable = localStorage.getItem("role") === "member";
 
   const handleClick = (event, newValue) => history.push(tabs[newValue]);
 
@@ -29,7 +30,7 @@ export const AppHeader = ({ tabValue }) => {
 
   const onClickLogout = () => {
     fetch(url).then((res) => {
-      localStorage.removeItem("displayName");
+      localStorage.clear();
       history.push("/login");
     });
   };
@@ -41,8 +42,8 @@ export const AppHeader = ({ tabValue }) => {
           <Tabs value={tabValue} onChange={handleClick}>
             <Tab label="Books" />
             <Tab label="Favorite" />
-            <Tab label="Add Book" />
-            <Tab label="Users" />
+            <Tab label="Add Book" disabled={shouldDisable} />
+            <Tab label="Users" disabled={shouldDisable} />
           </Tabs>
           <div style={{ flexGrow: 1 }} />
           <IconButton
@@ -60,7 +61,7 @@ export const AppHeader = ({ tabValue }) => {
             open={open}
             onClose={handleClose}
           >
-            <MenuItem>{localStorage.displayName}</MenuItem>
+            <MenuItem>{localStorage.getItem("displayName")}</MenuItem>
             <MenuItem onClick={onClickLogout}>Logout</MenuItem>
           </Menu>
         </Toolbar>

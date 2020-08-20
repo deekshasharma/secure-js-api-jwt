@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -17,10 +17,14 @@ export const AddBook = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const history = useHistory();
+  const showPage = localStorage.getItem("role") === "admin";
+
+  useEffect(() => {
+    if (!localStorage.getItem("role")) history.push("/login");
+  }, []);
 
   const onChangeBookName = (book) => setBookName(book);
   const onChangeAuthorName = (author) => setAuthorName(author);
-
   const onClick = () => {
     const bookData = { name: book, author: author };
     fetch(url, {
@@ -29,8 +33,10 @@ export const AddBook = () => {
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        if (res.status === 401) history.push("/login");
-        else {
+        if (res.status === 401) {
+          localStorage.clear();
+          history.push("/login");
+        } else {
           setOpen(true);
           if (res.status === 200) {
             setBookName("");
@@ -50,53 +56,56 @@ export const AddBook = () => {
   return (
     <div className="AddBook">
       <AppHeader tabValue={2} />
-      <Grid container direction="column" alignItems="center">
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <Typography variant="h3" gutterBottom>
-            Add New Book!
-            <span role="img" aria-label="books">
-              📘
-            </span>
-          </Typography>
+      {!showPage && <div />}
+      {showPage && (
+        <Grid container direction="column" alignItems="center">
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <Typography variant="h3" gutterBottom>
+              Add New Book!
+              <span role="img" aria-label="books">
+                📘
+              </span>
+            </Typography>
+          </Grid>
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <TextField
+              id="bookname-input"
+              variant="outlined"
+              label="book"
+              value={book}
+              onChange={(e) => onChangeBookName(e.target.value)}
+            />
+          </Grid>
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <TextField
+              id="authorname-input"
+              variant="outlined"
+              label="author"
+              value={author}
+              onChange={(e) => onChangeAuthorName(e.target.value)}
+            />
+          </Grid>
+          <Grid item style={{ marginBottom: "7vh" }}>
+            <Button
+              aria-label="login"
+              variant="contained"
+              size="large"
+              color="primary"
+              onClick={onClick}
+            >
+              ADD BOOK
+            </Button>
+          </Grid>
+          <Grid>
+            <Snackbar
+              open={open}
+              message={message}
+              autoHideDuration={2000}
+              onClose={handleClose}
+            />
+          </Grid>
         </Grid>
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <TextField
-            id="bookname-input"
-            variant="outlined"
-            label="book"
-            value={book}
-            onChange={(e) => onChangeBookName(e.target.value)}
-          />
-        </Grid>
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <TextField
-            id="authorname-input"
-            variant="outlined"
-            label="author"
-            value={author}
-            onChange={(e) => onChangeAuthorName(e.target.value)}
-          />
-        </Grid>
-        <Grid item style={{ marginBottom: "7vh" }}>
-          <Button
-            aria-label="login"
-            variant="contained"
-            size="large"
-            color="primary"
-            onClick={onClick}
-          >
-            ADD BOOK
-          </Button>
-        </Grid>
-        <Grid>
-          <Snackbar
-            open={open}
-            message={message}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          />
-        </Grid>
-      </Grid>
+      )}
     </div>
   );
 };

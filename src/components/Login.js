@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import {addAppSettings} from "../util";
 let base64 = require("base-64");
 let headers = new Headers();
 const url = "/login";
@@ -25,7 +26,7 @@ export const Login = () => {
       })
       .then((result) => {
         if (result.message) setLoginError(result.message);
-        else localStorage.setItem("displayName", result.username);
+        else addAppSettings(result.username, result.role);
       })
       .catch((err) => console.log("Error logging into app ", err.message));
   };

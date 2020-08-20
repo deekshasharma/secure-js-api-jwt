@@ -12,8 +12,10 @@ export const Books = () => {
   useEffect(() => {
     fetch(url)
       .then((res) => {
-        if (res.status === 401) history.push("/login");
-        else return res.json();
+        if (res.status === 401) {
+          localStorage.clear();
+          history.push("/login");
+        } else return res.json();
       })
       .then((json) => {
         if (json) setBooks([...json.books]);
