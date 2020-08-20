@@ -1,5 +1,6 @@
 require("dotenv").config({ path: "./variables.env" });
 const express = require("express");
+const cors = require("cors");
 const { uuid } = require("uuidv4");
 const {
   getUserByUsername,
@@ -18,6 +19,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
 app.use(express.json());
+app.use(cors());
 
 app.get("/users", verifyToken, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
@@ -25,12 +27,14 @@ app.get("/users", verifyToken, (req, res) => {
     getAllUsers().then((users) => {
       if (users && users.length > 0) {
         constructTokenResponse(token, null).then((token) => {
-          res.set("Authorization", "Bearer Token " + token);
-          res.status(200).send({ users: users });
+          res.status(200).send({ users: users, token: token });
         });
-      } else res.status(500).send({ users: [] });
+      } else res.status(500).send({ users: [], token: token });
     });
-  } else res.status(403).send({ message: "Not authorized to view users" });
+  } else
+    res
+      .status(403)
+      .send({ message: "Not authorized to view users", token: token });
 });
 
 app.get("/books", verifyToken, (req, res) => {
@@ -38,10 +42,9 @@ app.get("/books", verifyToken, (req, res) => {
   getAllBooks().then((books) => {
     if (books && books.length > 0) {
       constructTokenResponse(token, null).then((token) => {
-        res.set("Authorization", "Bearer Token " + token);
-        res.status(200).send({ books: books });
+        res.status(200).send({ books: books, token: token });
       });
-    } else res.status(500).send({ books: [] });
+    } else res.status(500).send({ books: [], token: token });
   });
 });
 
@@ -59,8 +62,9 @@ app.post("/login", (req, res) => {
             .send({ message: "username or password is incorrect" });
         else {
           constructTokenResponse(null, username).then((token) => {
-            res.set("Authorization", "Bearer Token " + token);
-            res.status(200).send({ username: user.username, role: user.role });
+            res
+              .status(200)
+              .send({ username: user.username, role: user.role, token: token });
           });
         }
       });
@@ -77,8 +81,7 @@ app.get("/favorite", verifyToken, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   getFavoriteBooksForUser(token).then((books) => {
     constructTokenResponse(token, null).then((token) => {
-      res.set("Authorization", "Bearer Token " + token);
-      res.status(200).send({ favorites: books });
+      res.status(200).send({ favorites: books, token: token });
     });
   });
 });
@@ -91,11 +94,15 @@ app.post("/book", verifyToken, (req, res) => {
         if (err) res.status(500).send({ message: "Cannot add this book" });
         else {
           constructTokenResponse(token, null).then((token) => {
-            res.set("Authorization", "Bearer Token " + token);
-            res.status(200).send({ message: "Book added successfully" });
+            res
+              .status(200)
+              .send({ message: "Book added successfully", token: token });
           });
         }
       }
     );
-  } else res.status(403).send({ message: "Not authorized to add a book" });
+  } else
+    res
+      .status(403)
+      .send({ message: "Not authorized to add a book", token: token });
 });
