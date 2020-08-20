@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 let base64 = require("base-64");
+let jwtDecode = require("jwt-decode");
 let headers = new Headers();
 const url = "http://localhost:5000/login";
 
@@ -14,14 +15,29 @@ export const Login = () => {
   const onChangePassword = (password) => setPassword(password);
   const history = useHistory();
 
+  // const onClickLogin = () => {
+  //   headers.set(
+  //     "Authorization",
+  //     "Basic " + base64.encode(userName + ":" + password)
+  //   );
+  //   fetch(url, { headers: headers, method: "POST" })
+  //     .then((res) => (res.status === 200 ? history.push("/books") : res.json()))
+  //     .then((json) => setLoginError(json.message))
+  //     .catch((err) => console.log("Error logging into app ", err.message));
+  // };
+
   const onClickLogin = () => {
     headers.set(
       "Authorization",
       "Basic " + base64.encode(userName + ":" + password)
     );
     fetch(url, { headers: headers, method: "POST" })
-      .then((res) => (res.status === 200 ? history.push("/books") : res.json()))
-      .then((json) => setLoginError(json.message))
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.message) setLoginError(json.message);
+        else localStorage.setItem("token", json.token);
+        console.log(jwtDecode(json.token));
+      })
       .catch((err) => console.log("Error logging into app ", err.message));
   };
 
