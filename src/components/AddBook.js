@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
+import { useHistory } from "react-router-dom";
 const url = "http://localhost:5000/book";
 
 export const AddBook = () => {
@@ -15,26 +16,38 @@ export const AddBook = () => {
   const [author, setAuthorName] = useState("");
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) history.push("/login");
+  }, [history]);
 
   const onChangeBookName = (book) => setBookName(book);
   const onChangeAuthorName = (author) => setAuthorName(author);
-
   const onClick = () => {
     const bookData = { name: book, author: author };
     fetch(url, {
-      headers: { "Content-type": "application/json" },
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       method: "POST",
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        setOpen(true);
-        if (res.status === 200) {
-          setBookName("");
-          setAuthorName("");
+        if (res.status === 401) {
+          localStorage.clear();
+          history.push("/login");
+        } else {
+          setOpen(true);
+          if (res.status === 200) {
+            setBookName("");
+            setAuthorName("");
+          }
         }
         return res.json();
       })
-      .then((json) => setMessage(json.message))
+      .then((json) => (json ? setMessage(json.message) : ""))
       .catch((err) => console.log("Error adding book ", err.message));
   };
 

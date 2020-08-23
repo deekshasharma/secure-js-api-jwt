@@ -11,13 +11,14 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import { isMember } from "../util";
 
 export const AppHeader = ({ tabValue }) => {
   const tabs = ["/books", "/favorite", "/book", "/users"];
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-
-  let history = useHistory();
+  const history = useHistory();
+  const shouldDisable = !isMember();
 
   const handleClick = (event, newValue) => history.push(tabs[newValue]);
 
@@ -39,8 +40,8 @@ export const AppHeader = ({ tabValue }) => {
           <Tabs value={tabValue} onChange={handleClick}>
             <Tab label="Books" />
             <Tab label="Favorite" />
-            <Tab label="Add Book" />
-            <Tab label="Users" />
+            <Tab label="Add Book" disabled={shouldDisable} />
+            <Tab label="Users" disabled={shouldDisable} />
           </Tabs>
           <div style={{ flexGrow: 1 }} />
           <IconButton

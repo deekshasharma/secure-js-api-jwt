@@ -12,7 +12,9 @@ export const Books = () => {
 
   useEffect(() => {
     fetch(url, {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token") || "",
+      },
     })
       .then((res) => {
         if (res.status === 401) {
@@ -21,11 +23,13 @@ export const Books = () => {
         } else return res.json();
       })
       .then((json) => {
-        updateAppSettings(json.token);
-        if (json) setBooks([...json.books]);
+        if (json) {
+          updateAppSettings(json.token);
+          setBooks([...json.books]);
+        }
       })
       .catch((err) => console.log("Error fetching books ", err.message));
-  }, []);
+  }, [history]);
 
   return (
     <div className="Content">
