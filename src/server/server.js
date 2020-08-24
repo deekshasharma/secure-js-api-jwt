@@ -84,9 +84,15 @@ app.get("/favorite", verifyToken, (req, res) => {
 });
 
 app.post("/book", verifyToken, (req, res) => {
-  if (getAudienceFromToken(req.cookies.token).includes(Constants.ADD_BOOK)) {
-    addBook({ name: req.body.name, author: req.body.author, id: uuid() }).then(
-      (err) => {
+  if (!req.body.name || !req.body.author) {
+    res.status(400).send({ message: "Invalid Book" });
+  } else {
+    if (getAudienceFromToken(req.cookies.token).includes(Constants.ADD_BOOK)) {
+      addBook({
+        name: req.body.name,
+        author: req.body.author,
+        id: uuid(),
+      }).then((err) => {
         if (err) res.status(500).send({ message: "Cannot add this book" });
         else {
           generateToken(req.cookies.token, null).then((token) => {
@@ -94,7 +100,7 @@ app.post("/book", verifyToken, (req, res) => {
             res.status(200).send({ message: "Book added successfully" });
           });
         }
-      }
-    );
-  } else res.status(403).send({ message: "Not authorized to add a book" });
+      });
+    } else res.status(403).send({ message: "Not authorized to add a book" });
+  }
 });
