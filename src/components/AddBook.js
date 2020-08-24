@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -8,17 +8,24 @@ import {
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
-const url = "http://localhost:5000/book";
+import { useHistory } from "react-router-dom";
+const url = "/book";
 
 export const AddBook = () => {
   const [book, setBookName] = useState("");
   const [author, setAuthorName] = useState("");
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const history = useHistory();
+  const showPage = localStorage.getItem("role") === "admin";
+
+  useEffect(() => {
+    if (!localStorage.getItem("role")) history.push("/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeBookName = (book) => setBookName(book);
   const onChangeAuthorName = (author) => setAuthorName(author);
-
   const onClick = () => {
     const bookData = { name: book, author: author };
     fetch(url, {
@@ -27,14 +34,21 @@ export const AddBook = () => {
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        setOpen(true);
-        if (res.status === 200) {
-          setBookName("");
-          setAuthorName("");
+        if (res.status === 401) {
+          localStorage.clear();
+          history.push("/login");
+        } else {
+          setOpen(true);
+          if (res.status === 200) {
+            setBookName("");
+            setAuthorName("");
+          }
+          return res.json();
         }
-        return res.json();
       })
-      .then((json) => setMessage(json.message))
+      .then((json) => {
+        if (json) setMessage(json.message);
+      })
       .catch((err) => console.log("Error adding book ", err.message));
   };
 
@@ -43,53 +57,56 @@ export const AddBook = () => {
   return (
     <div className="AddBook">
       <AppHeader tabValue={2} />
-      <Grid container direction="column" alignItems="center">
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <Typography variant="h3" gutterBottom>
-            Add New Book!
-            <span role="img" aria-label="books">
-              📘
-            </span>
-          </Typography>
+      {!showPage && <div />}
+      {showPage && (
+        <Grid container direction="column" alignItems="center">
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <Typography variant="h3" gutterBottom>
+              Add New Book!
+              <span role="img" aria-label="books">
+                📘
+              </span>
+            </Typography>
+          </Grid>
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <TextField
+              id="bookname-input"
+              variant="outlined"
+              label="book"
+              value={book}
+              onChange={(e) => onChangeBookName(e.target.value)}
+            />
+          </Grid>
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <TextField
+              id="authorname-input"
+              variant="outlined"
+              label="author"
+              value={author}
+              onChange={(e) => onChangeAuthorName(e.target.value)}
+            />
+          </Grid>
+          <Grid item style={{ marginBottom: "7vh" }}>
+            <Button
+              aria-label="login"
+              variant="contained"
+              size="large"
+              color="primary"
+              onClick={onClick}
+            >
+              ADD BOOK
+            </Button>
+          </Grid>
+          <Grid>
+            <Snackbar
+              open={open}
+              message={message}
+              autoHideDuration={2000}
+              onClose={handleClose}
+            />
+          </Grid>
         </Grid>
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <TextField
-            id="bookname-input"
-            variant="outlined"
-            label="book"
-            value={book}
-            onChange={(e) => onChangeBookName(e.target.value)}
-          />
-        </Grid>
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <TextField
-            id="authorname-input"
-            variant="outlined"
-            label="author"
-            value={author}
-            onChange={(e) => onChangeAuthorName(e.target.value)}
-          />
-        </Grid>
-        <Grid item style={{ marginBottom: "7vh" }}>
-          <Button
-            aria-label="login"
-            variant="contained"
-            size="large"
-            color="primary"
-            onClick={onClick}
-          >
-            ADD BOOK
-          </Button>
-        </Grid>
-        <Grid>
-          <Snackbar
-            open={open}
-            message={message}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          />
-        </Grid>
-      </Grid>
+      )}
     </div>
   );
 };

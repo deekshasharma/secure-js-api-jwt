@@ -2,16 +2,26 @@ import React, { useState, useEffect } from "react";
 import { Button, Grid, Paper, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
-const url = "http://localhost:5000/books";
+import { useHistory } from "react-router-dom";
+const url = "/books";
 
 export const Books = () => {
   const [books, setBooks] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     fetch(url)
-      .then((res) => res.json())
-      .then((json) => setBooks([...json.books]))
+      .then((res) => {
+        if (res.status === 401) {
+          localStorage.clear();
+          history.push("/login");
+        } else return res.json();
+      })
+      .then((json) => {
+        if (json) setBooks([...json.books]);
+      })
       .catch((err) => console.log("Error fetching books ", err.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
