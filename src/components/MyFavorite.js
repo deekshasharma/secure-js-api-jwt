@@ -9,17 +9,17 @@ export const MyFavorite = () => {
   const [favBooks, setFavBooks] = useState([]);
   const history = useHistory();
 
+  const redirect = () => {
+    localStorage.clear();
+    history.push("/login");
+  };
+
   useEffect(() => {
     fetch(url)
-      .then((res) => {
-        if (res.status === 401) {
-          localStorage.clear();
-          history.push("/login");
-        } else return res.json();
-      })
-      .then((json) => {
-        if (json) setFavBooks([...json.favorites]);
-      })
+      .then((res) => (res.status === 401 ? redirect() : res.json()))
+      .then((json) =>
+        json ? setFavBooks([...json.favorites]) : setFavBooks([])
+      )
       .catch((err) =>
         console.log("Error getting favorite books ", err.message)
       );
