@@ -64,9 +64,8 @@ const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
 exports.getAudienceFromToken = (token) => jwt.decode(token)["aud"];
 
 exports.generateToken = async function (prevToken, userName) {
-  let name = userName || getUsernameFromToken(prevToken);
+  const name = userName || getUsernameFromToken(prevToken);
   const user = await getUserByUsername(name);
-  const payload = {};
   const options = {
     algorithm: process.env.ALGORITHM,
     expiresIn: process.env.EXPIRY,
@@ -77,20 +76,18 @@ exports.generateToken = async function (prevToken, userName) {
         ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE
         : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
   };
-  return jwt.sign(payload, process.env.SECRET, options);
+  return jwt.sign({}, process.env.SECRET, options);
 };
 
 exports.verifyToken = (req, res, next) => {
   const token = req.cookies.token;
   if (!token)
-    res.status(401).send({ message: "Not Authorized to access data" });
+    res.status(401).send({ message: "Not authorized to access data" });
   else {
     jwt.verify(token, process.env.SECRET, function (err) {
       if (err) {
         res.clearCookie("token");
-        res
-          .status(401)
-          .send({ message: "Please login again! Your session has expired" });
+        res.status(401).send({ message: "Please login again" });
       } else next();
     });
   }
