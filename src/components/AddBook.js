@@ -25,7 +25,19 @@ export const AddBook = () => {
   }, []);
 
   const onChangeBookName = (book) => setBookName(book);
+
   const onChangeAuthorName = (author) => setAuthorName(author);
+
+  const redirect = () => {
+    localStorage.clear();
+    history.push("/login");
+  };
+
+  const clearTextFields = () => {
+    setBookName("");
+    setAuthorName("");
+  };
+
   const onClick = () => {
     const bookData = { name: book, author: author };
     fetch(url, {
@@ -34,21 +46,14 @@ export const AddBook = () => {
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        if (res.status === 401) {
-          localStorage.clear();
-          history.push("/login");
-        } else {
+        if (res.status === 401) redirect();
+        else {
           setOpen(true);
-          if (res.status === 200) {
-            setBookName("");
-            setAuthorName("");
-          }
+          if (res.status === 200) clearTextFields();
           return res.json();
         }
       })
-      .then((json) => {
-        if (json) setMessage(json.message);
-      })
+      .then((json) => (json ? setMessage(json.message) : setMessage("")))
       .catch((err) => console.log("Error adding book ", err.message));
   };
 
