@@ -9,17 +9,15 @@ export const Books = () => {
   const [books, setBooks] = useState([]);
   const history = useHistory();
 
+  const redirect = () => {
+    localStorage.clear();
+    history.push("/login");
+  };
+
   useEffect(() => {
     fetch(url)
-      .then((res) => {
-        if (res.status === 401) {
-          localStorage.clear();
-          history.push("/login");
-        } else return res.json();
-      })
-      .then((json) => {
-        if (json) setBooks([...json.books]);
-      })
+      .then((res) => (res.status === 401 ? redirect() : res.json()))
+      .then((json) => (json ? setBooks([...json.books]) : setBooks([])))
       .catch((err) => console.log("Error fetching books ", err.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
