@@ -9,6 +9,7 @@ import {
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
 import { useHistory } from "react-router-dom";
+import { constructHeader } from "../util";
 const url = "http://localhost:5000/book";
 
 export const AddBook = () => {
@@ -23,27 +24,31 @@ export const AddBook = () => {
   }, [history]);
 
   const onChangeBookName = (book) => setBookName(book);
+
   const onChangeAuthorName = (author) => setAuthorName(author);
+
+  const redirect = () => {
+    localStorage.clear();
+    history.push("/login");
+  };
+
+  const clearTextFields = () => {
+    setBookName("");
+    setAuthorName("");
+  };
+
   const onClick = () => {
     const bookData = { name: book, author: author };
     fetch(url, {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+      headers: constructHeader("application/json"),
       method: "POST",
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        if (res.status === 401) {
-          localStorage.clear();
-          history.push("/login");
-        } else {
+        if (res.status === 401) redirect();
+        else {
           setOpen(true);
-          if (res.status === 200) {
-            setBookName("");
-            setAuthorName("");
-          }
+          if (res.status === 200) clearTextFields();
         }
         return res.json();
       })
