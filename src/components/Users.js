@@ -10,17 +10,15 @@ export const Users = () => {
   const history = useHistory();
   const showPage = localStorage.getItem("role") === "admin";
 
+  const redirect = () => {
+    localStorage.clear();
+    history.push("/login");
+  };
+
   useEffect(() => {
     fetch(url)
-      .then((res) => {
-        if (res.status === 401) {
-          localStorage.clear();
-          history.push("/login");
-        } else return res.json();
-      })
-      .then((json) => {
-        if (json) setUsers([...json.users]);
-      })
+      .then((res) => (res.status === 401 ? redirect() : res.json()))
+      .then((json) => (json ? setUsers([...json.books]) : setUsers([])))
       .catch((err) => console.log("Error fetching users ", err.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
