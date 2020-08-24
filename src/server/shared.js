@@ -63,25 +63,21 @@ const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
 
 exports.getAudienceFromToken = (token) => jwt.decode(token)["aud"];
 
-const generateToken = (username, role) => {
+exports.generateToken = async function (prevToken, userName) {
+  let name = userName || getUsernameFromToken(prevToken);
+  const user = await getUserByUsername(name);
   const payload = {};
   const options = {
     algorithm: process.env.ALGORITHM,
     expiresIn: process.env.EXPIRY,
     issuer: process.env.ISSUER,
-    subject: username,
+    subject: userName || user.username,
     audience:
-      role === "admin"
+      user.role === "admin"
         ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE
         : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
   };
   return jwt.sign(payload, process.env.SECRET, options);
-};
-
-exports.constructTokenResponse = async function (token, userName) {
-  let name = userName || getUsernameFromToken(token);
-  const user = await getUserByUsername(name);
-  return generateToken(user.username, user.role);
 };
 
 exports.verifyToken = (req, res, next) => {

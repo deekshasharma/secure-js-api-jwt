@@ -9,7 +9,7 @@ const {
   getAllBooks,
   getAllUsers,
   addBook,
-  constructTokenResponse,
+  generateToken,
   verifyToken,
   getFavoriteBooksForUser,
   getAudienceFromToken,
@@ -25,7 +25,7 @@ app.get("/users", verifyToken, (req, res) => {
   if (getAudienceFromToken(req.cookies.token).includes(Constants.SHOW_USERS)) {
     getAllUsers().then((users) => {
       if (users && users.length > 0) {
-        constructTokenResponse(req.cookies.token, null).then((token) => {
+        generateToken(req.cookies.token, null).then((token) => {
           res.cookie("token", token, { httpOnly: true });
           res.status(200).send({ users: users });
         });
@@ -37,7 +37,7 @@ app.get("/users", verifyToken, (req, res) => {
 app.get("/books", verifyToken, (req, res) => {
   getAllBooks().then((books) => {
     if (books && books.length > 0) {
-      constructTokenResponse(req.cookies.token, null).then((token) => {
+      generateToken(req.cookies.token, null).then((token) => {
         res.cookie("token", token, { httpOnly: true });
         res.status(200).send({ books: books });
       });
@@ -58,7 +58,7 @@ app.post("/login", (req, res) => {
             .status(401)
             .send({ message: "username or password is incorrect" });
         else {
-          constructTokenResponse(null, username).then((token) => {
+          generateToken(null, username).then((token) => {
             res.cookie("token", token, { httpOnly: true });
             res.status(200).send({ username: user.username, role: user.role });
           });
@@ -76,7 +76,7 @@ app.get("/logout", verifyToken, (req, res) => {
 
 app.get("/favorite", verifyToken, (req, res) => {
   getFavoriteBooksForUser(req.cookies.token).then((books) => {
-    constructTokenResponse(req.cookies.token, null).then((token) => {
+    generateToken(req.cookies.token, null).then((token) => {
       res.cookie("token", token, { httpOnly: true });
       res.status(200).send({ favorites: books });
     });
@@ -89,7 +89,7 @@ app.post("/book", verifyToken, (req, res) => {
       (err) => {
         if (err) res.status(500).send({ message: "Cannot add this book" });
         else {
-          constructTokenResponse(req.cookies.token, null).then((token) => {
+          generateToken(req.cookies.token, null).then((token) => {
             res.cookie("token", token, { httpOnly: true });
             res.status(200).send({ message: "Book added successfully" });
           });

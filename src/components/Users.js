@@ -18,7 +18,7 @@ export const Users = () => {
   useEffect(() => {
     fetch(url)
       .then((res) => (res.status === 401 ? redirect() : res.json()))
-      .then((json) => (json ? setUsers([...json.books]) : setUsers([])))
+      .then((json) => (json ? setUsers([...json.users]) : setUsers([])))
       .catch((err) => console.log("Error fetching users ", err.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

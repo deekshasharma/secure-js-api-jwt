@@ -10,8 +10,8 @@ export const Books = () => {
   const history = useHistory();
 
   const redirect = () => {
-    localStorage.clear();
-    history.push("/login");
+      localStorage.clear();
+      history.push("/login");
   };
 
   useEffect(() => {

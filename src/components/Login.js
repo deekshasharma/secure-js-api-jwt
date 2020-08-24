@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import {addAppSettings} from "../util";
+import { addAppSettings } from "../util";
 let base64 = require("base-64");
 let headers = new Headers();
 const url = "/login";
