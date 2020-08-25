@@ -9,10 +9,10 @@ const {
   getAllBooks,
   getAllUsers,
   addBook,
-  constructTokenResponse,
   verifyToken,
   getFavoriteBooksForUser,
   getAudienceFromToken,
+  generateToken,
 } = require("./shared");
 const Constants = require("./constants");
 const app = express();
@@ -26,7 +26,7 @@ app.get("/users", verifyToken, (req, res) => {
   if (getAudienceFromToken(token).includes(Constants.SHOW_USERS)) {
     getAllUsers().then((users) => {
       if (users && users.length > 0) {
-        constructTokenResponse(token, null).then((token) => {
+        generateToken(token, null).then((token) => {
           res.status(200).send({ users: users, token: token });
         });
       } else res.status(500).send({ users: [], token: token });
@@ -41,7 +41,7 @@ app.get("/books", verifyToken, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   getAllBooks().then((books) => {
     if (books && books.length > 0) {
-      constructTokenResponse(token, null).then((token) => {
+      generateToken(token, null).then((token) => {
         res.status(200).send({ books: books, token: token });
       });
     } else res.status(500).send({ books: [], token: token });
@@ -61,7 +61,7 @@ app.post("/login", (req, res) => {
             .status(401)
             .send({ message: "username or password is incorrect" });
         else {
-          constructTokenResponse(null, username).then((token) => {
+          generateToken(null, username).then((token) => {
             res
               .status(200)
               .send({ username: user.username, role: user.role, token: token });
@@ -80,7 +80,7 @@ app.get("/logout", verifyToken, (req, res) => {
 app.get("/favorite", verifyToken, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   getFavoriteBooksForUser(token).then((books) => {
-    constructTokenResponse(token, null).then((token) => {
+    generateToken(token, null).then((token) => {
       res.status(200).send({ favorites: books, token: token });
     });
   });
@@ -93,7 +93,7 @@ app.post("/book", verifyToken, (req, res) => {
       (err) => {
         if (err) res.status(500).send({ message: "Cannot add this book" });
         else {
-          constructTokenResponse(token, null).then((token) => {
+          generateToken(token, null).then((token) => {
             res
               .status(200)
               .send({ message: "Book added successfully", token: token });

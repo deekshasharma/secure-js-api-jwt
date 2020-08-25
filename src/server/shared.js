@@ -60,27 +60,23 @@ exports.addBook = async function (book) {
 };
 
 const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
+
 exports.getAudienceFromToken = (token) => jwt.decode(token)["aud"];
 
-const generateToken = (username, role) => {
-  const payload = {};
+exports.generateToken = async function (prevToken, userName) {
+  const name = userName || getUsernameFromToken(prevToken);
+  const user = await getUserByUsername(name);
   const options = {
     algorithm: process.env.ALGORITHM,
     expiresIn: process.env.EXPIRY,
     issuer: process.env.ISSUER,
-    subject: username,
+    subject: userName || user.username,
     audience:
-      role === "admin"
+      user.role === "admin"
         ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE
         : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
   };
-  return jwt.sign(payload, process.env.SECRET, options);
-};
-
-exports.constructTokenResponse = async function (token, userName) {
-  let name = userName || getUsernameFromToken(token);
-  const user = await getUserByUsername(name);
-  return generateToken(user.username, user.role);
+  return jwt.sign({}, process.env.SECRET, options);
 };
 
 exports.verifyToken = (req, res, next) => {
@@ -90,9 +86,7 @@ exports.verifyToken = (req, res, next) => {
   else {
     jwt.verify(token, process.env.SECRET, function (err) {
       if (err) {
-        res
-          .status(401)
-          .send({ message: "Please login again! Your session has expired" });
+        res.status(401).send({ message: "Please login again" });
       } else next();
     });
   }
