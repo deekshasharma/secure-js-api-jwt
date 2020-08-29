@@ -3,9 +3,8 @@ import { Grid, Paper, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
 import { useHistory } from "react-router-dom";
-import { constructHeader, updateAppSettings } from "../util";
-const url = "http://localhost:5000/favorite";
 
+const url = "/favorite";
 export const MyFavorite = () => {
   const [favBooks, setFavBooks] = useState([]);
   const history = useHistory();
@@ -16,14 +15,11 @@ export const MyFavorite = () => {
   };
 
   useEffect(() => {
-    fetch(url, { headers: constructHeader() })
+    fetch(url)
       .then((res) => (res.status === 401 ? redirect() : res.json()))
-      .then((json) => {
-        if (json) {
-          updateAppSettings(json.token);
-          setFavBooks([...json.favorites]);
-        }
-      })
+      .then((json) =>
+        json ? setFavBooks([...json.favorites]) : setFavBooks([])
+      )
       .catch((err) =>
         console.log("Error getting favorite books ", err.message)
       );

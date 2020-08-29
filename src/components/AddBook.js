@@ -9,8 +9,7 @@ import {
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
 import { useHistory } from "react-router-dom";
-import { constructHeader } from "../util";
-const url = "http://localhost:5000/book";
+const url = "/book";
 
 export const AddBook = () => {
   const [book, setBookName] = useState("");
@@ -18,10 +17,12 @@ export const AddBook = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const history = useHistory();
+  const showPage = localStorage.getItem("role") === "admin";
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) history.push("/login");
-  }, [history]);
+    if (!localStorage.getItem("role")) history.push("/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeBookName = (book) => setBookName(book);
 
@@ -40,7 +41,7 @@ export const AddBook = () => {
   const onClick = () => {
     const bookData = { name: book, author: author };
     fetch(url, {
-      headers: constructHeader("application/json"),
+      headers: { "Content-type": "application/json" },
       method: "POST",
       body: JSON.stringify(bookData),
     })
@@ -49,10 +50,10 @@ export const AddBook = () => {
         else {
           setOpen(true);
           if (res.status === 200) clearTextFields();
-        }
         return res.json();
+        }
       })
-      .then((json) => (json ? setMessage(json.message) : ""))
+      .then((json) => (json ? setMessage(json.message) : setMessage("")))
       .catch((err) => console.log("Error adding book ", err.message));
   };
 
@@ -61,6 +62,8 @@ export const AddBook = () => {
   return (
     <div className="AddBook">
       <AppHeader tabValue={2} />
+      {!showPage && <div />}
+      {showPage && (
       <Grid container direction="column" alignItems="center">
         <Grid item style={{ marginBottom: "5vh" }}>
           <Typography variant="h3" gutterBottom>
@@ -108,6 +111,7 @@ export const AddBook = () => {
           />
         </Grid>
       </Grid>
+      )}
     </div>
   );
 };

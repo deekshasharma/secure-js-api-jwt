@@ -11,14 +11,14 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { isMember } from "../util";
+const url = "/logout";
 
 export const AppHeader = ({ tabValue }) => {
   const tabs = ["/books", "/favorite", "/book", "/users"];
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
-  const shouldDisable = !isMember();
+  const shouldDisable = localStorage.getItem("role") === "member";
 
   const handleClick = (event, newValue) => history.push(tabs[newValue]);
 
@@ -29,8 +29,10 @@ export const AppHeader = ({ tabValue }) => {
   };
 
   const onClickLogout = () => {
+    fetch(url).then((res) => {
     localStorage.clear();
     history.push("/login");
+    });
   };
 
   return (

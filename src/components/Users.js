@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Avatar, Grid, Typography } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
-import { constructHeader, updateAppSettings } from "../util";
 import { useHistory } from "react-router-dom";
-const url = "http://localhost:5000/users";
+const url = "/users";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
   const history = useHistory();
+  const showPage = localStorage.getItem("role") === "admin";
 
   const redirect = () => {
     localStorage.clear();
@@ -16,14 +16,9 @@ export const Users = () => {
   };
 
   useEffect(() => {
-    fetch(url, { headers: constructHeader() })
+    fetch(url)
       .then((res) => (res.status === 401 ? redirect() : res.json()))
-      .then((json) => {
-        if (json) {
-          updateAppSettings(json.token);
-          setUsers([...json.users]);
-        }
-      })
+      .then((json) => (json ? setUsers([...json.users]) : setUsers([])))
       .catch((err) => console.log("Error fetching users ", err.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -31,6 +26,8 @@ export const Users = () => {
   return (
     <div className="Content">
       <AppHeader tabValue={3} />
+      {!showPage && <div />}
+      {showPage && (
       <Grid container justify="center" direction="column" alignItems="center">
         <Grid item style={{ marginBottom: "5vh" }}>
           <Typography variant="h3" gutterBottom>
@@ -54,6 +51,7 @@ export const Users = () => {
           })}
         </Grid>
       </Grid>
+      )}
     </div>
   );
 };
