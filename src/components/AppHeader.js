@@ -18,7 +18,7 @@ export const AppHeader = ({ tabValue }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
-  const shouldDisable = !isMember();
+  const shouldDisable = isMember();
 
   const handleClick = (event, newValue) => history.push(tabs[newValue]);
 

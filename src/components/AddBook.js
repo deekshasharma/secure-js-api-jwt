@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-  Grid,
-  Typography,
   Button,
-  TextField,
+  Grid,
   Snackbar,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
 import { useHistory } from "react-router-dom";
-import { constructHeader } from "../util";
+import { constructHeader, isMember } from "../util";
+
 const url = "http://localhost:5000/book";
 
 export const AddBook = () => {
@@ -18,13 +19,14 @@ export const AddBook = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const history = useHistory();
+  const showPage = !isMember();
 
   useEffect(() => {
     if (!localStorage.getItem("token")) history.push("/login");
-  }, [history]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeBookName = (book) => setBookName(book);
-
   const onChangeAuthorName = (author) => setAuthorName(author);
 
   const redirect = () => {
@@ -61,53 +63,56 @@ export const AddBook = () => {
   return (
     <div className="AddBook">
       <AppHeader tabValue={2} />
-      <Grid container direction="column" alignItems="center">
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <Typography variant="h3" gutterBottom>
-            Add New Book!
-            <span role="img" aria-label="books">
-              📘
-            </span>
-          </Typography>
+      {!showPage && <div />}
+      {showPage && (
+        <Grid container direction="column" alignItems="center">
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <Typography variant="h3" gutterBottom>
+              Add New Book!
+              <span role="img" aria-label="books">
+                📘
+              </span>
+            </Typography>
+          </Grid>
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <TextField
+              id="bookname-input"
+              variant="outlined"
+              label="book"
+              value={book}
+              onChange={(e) => onChangeBookName(e.target.value)}
+            />
+          </Grid>
+          <Grid item style={{ marginBottom: "5vh" }}>
+            <TextField
+              id="authorname-input"
+              variant="outlined"
+              label="author"
+              value={author}
+              onChange={(e) => onChangeAuthorName(e.target.value)}
+            />
+          </Grid>
+          <Grid item style={{ marginBottom: "7vh" }}>
+            <Button
+              aria-label="login"
+              variant="contained"
+              size="large"
+              color="primary"
+              onClick={onClick}
+            >
+              ADD BOOK
+            </Button>
+          </Grid>
+          <Grid>
+            <Snackbar
+              open={open}
+              message={message}
+              autoHideDuration={2000}
+              onClose={handleClose}
+            />
+          </Grid>
         </Grid>
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <TextField
-            id="bookname-input"
-            variant="outlined"
-            label="book"
-            value={book}
-            onChange={(e) => onChangeBookName(e.target.value)}
-          />
-        </Grid>
-        <Grid item style={{ marginBottom: "5vh" }}>
-          <TextField
-            id="authorname-input"
-            variant="outlined"
-            label="author"
-            value={author}
-            onChange={(e) => onChangeAuthorName(e.target.value)}
-          />
-        </Grid>
-        <Grid item style={{ marginBottom: "7vh" }}>
-          <Button
-            aria-label="login"
-            variant="contained"
-            size="large"
-            color="primary"
-            onClick={onClick}
-          >
-            ADD BOOK
-          </Button>
-        </Grid>
-        <Grid>
-          <Snackbar
-            open={open}
-            message={message}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          />
-        </Grid>
-      </Grid>
+      )}
     </div>
   );
 };
