@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  Button,
   Grid,
-  Snackbar,
-  TextField,
   Typography,
+  Button,
+  TextField,
+  Snackbar,
 } from "@material-ui/core";
 import "../styles.css";
 import { AppHeader } from "./AppHeader";
 import { useHistory } from "react-router-dom";
-import { constructHeader, isMember } from "../util";
+import { constructHeader, isMember, updateAppSettings } from "../util";
 
 const url = "http://localhost:5000/book";
 
@@ -27,6 +27,7 @@ export const AddBook = () => {
   }, []);
 
   const onChangeBookName = (book) => setBookName(book);
+
   const onChangeAuthorName = (author) => setAuthorName(author);
 
   const redirect = () => {
@@ -54,7 +55,12 @@ export const AddBook = () => {
         }
         return res.json();
       })
-      .then((json) => (json ? setMessage(json.message) : ""))
+      .then((json) => {
+        if (json) {
+          updateAppSettings(json.token || "");
+          setMessage(json.message || "");
+        }
+      })
       .catch((err) => console.log("Error adding book ", err.message));
   };
 
@@ -65,53 +71,53 @@ export const AddBook = () => {
       <AppHeader tabValue={2} />
       {!showPage && <div />}
       {showPage && (
-        <Grid container direction="column" alignItems="center">
-          <Grid item style={{ marginBottom: "5vh" }}>
-            <Typography variant="h3" gutterBottom>
-              Add New Book!
-              <span role="img" aria-label="books">
-                📘
-              </span>
-            </Typography>
-          </Grid>
-          <Grid item style={{ marginBottom: "5vh" }}>
-            <TextField
-              id="bookname-input"
-              variant="outlined"
-              label="book"
-              value={book}
-              onChange={(e) => onChangeBookName(e.target.value)}
-            />
-          </Grid>
-          <Grid item style={{ marginBottom: "5vh" }}>
-            <TextField
-              id="authorname-input"
-              variant="outlined"
-              label="author"
-              value={author}
-              onChange={(e) => onChangeAuthorName(e.target.value)}
-            />
-          </Grid>
-          <Grid item style={{ marginBottom: "7vh" }}>
-            <Button
-              aria-label="login"
-              variant="contained"
-              size="large"
-              color="primary"
-              onClick={onClick}
-            >
-              ADD BOOK
-            </Button>
-          </Grid>
-          <Grid>
-            <Snackbar
-              open={open}
-              message={message}
-              autoHideDuration={2000}
-              onClose={handleClose}
-            />
-          </Grid>
+      <Grid container direction="column" alignItems="center">
+        <Grid item style={{ marginBottom: "5vh" }}>
+          <Typography variant="h3" gutterBottom>
+            Add New Book!
+            <span role="img" aria-label="books">
+              📘
+            </span>
+          </Typography>
         </Grid>
+        <Grid item style={{ marginBottom: "5vh" }}>
+          <TextField
+            id="bookname-input"
+            variant="outlined"
+            label="book"
+            value={book}
+            onChange={(e) => onChangeBookName(e.target.value)}
+          />
+        </Grid>
+        <Grid item style={{ marginBottom: "5vh" }}>
+          <TextField
+            id="authorname-input"
+            variant="outlined"
+            label="author"
+            value={author}
+            onChange={(e) => onChangeAuthorName(e.target.value)}
+          />
+        </Grid>
+        <Grid item style={{ marginBottom: "7vh" }}>
+          <Button
+            aria-label="login"
+            variant="contained"
+            size="large"
+            color="primary"
+            onClick={onClick}
+          >
+            ADD BOOK
+          </Button>
+        </Grid>
+        <Grid>
+          <Snackbar
+            open={open}
+            message={message}
+            autoHideDuration={2000}
+            onClose={handleClose}
+          />
+        </Grid>
+      </Grid>
       )}
     </div>
   );
