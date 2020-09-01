@@ -11,7 +11,8 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { isMember } from "../util";
+import { constructHeader, isMember } from "../util";
+const url = "http://localhost:5000/logout";
 
 export const AppHeader = ({ tabValue }) => {
   const tabs = ["/books", "/favorite", "/book", "/users"];
@@ -29,8 +30,10 @@ export const AppHeader = ({ tabValue }) => {
   };
 
   const onClickLogout = () => {
-    localStorage.clear();
-    history.push("/login");
+    fetch(url, { headers: constructHeader() }).then((res) => {
+      localStorage.clear();
+      history.push("/login");
+    });
   };
 
   return (
