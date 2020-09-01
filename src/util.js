@@ -9,8 +9,9 @@ export const updateAppSettings = (token) => {
 };
 
 export const isMember = () => {
-  if (localStorage.getItem("token")) {
-    const audience = jwtDecode(localStorage.getItem("token"))["aud"];
+  const token = localStorage.getItem("token");
+  if (token) {
+    const audience = jwtDecode(token)["aud"];
     return !audience.includes("SHOW_USERS") && !audience.includes("ADD_BOOK");
   }
 };
