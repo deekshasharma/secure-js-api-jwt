@@ -100,6 +100,22 @@ npm install -g node-gyp
 npm install --save bcrypt
 ```
 
+### What user credentials are used in the Bookie App?
+Below are the credentials you may want to use when logging to the app as member or admin.
+
+**Member** 
+```bash
+deeksha30
+kdje89#$%
+```
+
+**Admin**
+```bash
+zenmade23
+728193kfej**(
+``` 
+
+
 # Git Branches
 Checkout the branches listed below as you progress through different modules.
 
