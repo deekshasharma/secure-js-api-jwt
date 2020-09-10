@@ -1,31 +1,31 @@
 .App {
-    text-align: center;
+  text-align: center;
 }
 
 .Content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 20vh;
-    margin-top: 12vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20vh;
+  margin-top: 12vh;
 }
 
 .Book {
-    padding: 2em;
-    margin: 2em;
-    border: 2px solid gray;
+  padding: 2em;
+  margin: 2em;
+  border: 2px solid gray;
 }
 
 .User {
-    border: 2px solid gray;
-    padding: 1em;
-    margin-bottom: 2em;
-    border-radius: 10px;
+  border: 2px solid gray;
+  padding: 1em;
+  margin-bottom: 2em;
+  border-radius: 10px;
 }
 
 .AddBook {
-    display: flex;
-    align-items: center;
-    min-height: 20vh;
-    padding: 7em;
+  display: flex;
+  align-items: center;
+  min-height: 20vh;
+  padding: 7em;
 }

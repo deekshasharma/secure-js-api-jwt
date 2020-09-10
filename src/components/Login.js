@@ -1,47 +1,85 @@
-import React, {useState} from 'react';
-import {Grid, Typography, TextField, Button} from '@material-ui/core';
-import {useHistory} from "react-router-dom";
-
+import React, { useState } from "react";
+import { Grid, Typography, TextField, Button } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { updateAppSettings } from "../util";
+let base64 = require("base-64");
 let headers = new Headers();
-let base64 = require('base-64');
+const url = "http://localhost:5000/login";
 
-export const Login = ({showLoginErr}) => {
-    const [username, setUserName] = useState('');
-    const [password, setPassword] = useState('');
+export const Login = () => {
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const history = useHistory();
 
-    const onChangeUsername = (username) => setUserName(username);
-    const onChangePassword = (pass) => setPassword(pass);
-    let history = useHistory();
+  const onChangeUsername = (username) => setUserName(username);
+  const onChangePassword = (password) => setPassword(password);
 
-    const onClickLogin = () => {
-        headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
-        fetch("/login", {headers: headers, method: 'POST'})
-            .then(res => res.json())
-            .then(() => history.push("/books"))
-    };
+  const onClickLogin = () => {
+    headers.set(
+      "Authorization",
+      "Basic " + base64.encode(userName + ":" + password)
+    );
+    fetch(url, { headers: headers, method: "POST" })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.message) setLoginError(json.message);
+        else {
+          updateAppSettings(json.token);
+          history.push("/books");
+        }
+      })
+      .catch((err) => console.log("Error logging into app ", err.message));
+  };
 
-
-    return <Grid container direction="column" alignItems="center" style={{marginTop: "10vh"}}>
-        <Grid item style={{marginBottom: "10vh"}}>
-            <Typography variant="h3">Welcome to Bookie!
-                <span role="img" aria-label="books">📚</span>
-            </Typography>
-        </Grid>
-        <Grid item style={{marginBottom: "5vh"}}>
-            <TextField id="username-input" label="username" value={username}
-                       onChange={e => onChangeUsername(e.target.value)}/>
-        </Grid>
-        <Grid item style={{marginBottom: "7vh"}}>
-            <TextField id="password-input" label="password" type="password" value={password}
-                       onChange={e => onChangePassword(e.target.value)}/>
-        </Grid>
-        <Grid item style={{marginBottom: "7vh"}}>
-            <Button aria-label="login" variant="contained" size="large" color="primary"
-                    onClick={onClickLogin}>LOGIN</Button>
-        </Grid>
-
-        {showLoginErr && <Grid item>
-            <Typography color="error" variant="body2"> Either username or password is incorrect. Try again!</Typography>
-        </Grid>}
+  return (
+    <Grid
+      container
+      direction={"column"}
+      alignItems={"center"}
+      style={{ marginTop: "10vh" }}
+    >
+      <Grid item style={{ marginBottom: "10vh" }}>
+        <Typography variant={"h3"}>
+          Welcome to Bookie!
+          <span role={"img"} aria-label={"books"}>
+            📚
+          </span>
+        </Typography>
+      </Grid>
+      <Grid item style={{ marginBottom: "5vh" }}>
+        <TextField
+          id={"username-input"}
+          label={"username"}
+          value={userName}
+          onChange={(e) => onChangeUsername(e.target.value)}
+        />
+      </Grid>
+      <Grid item style={{ marginBottom: "7vh" }}>
+        <TextField
+          id={"password-input"}
+          label={"password"}
+          type={"password"}
+          value={password}
+          onChange={(e) => onChangePassword(e.target.value)}
+        />
+      </Grid>
+      <Grid item style={{ marginBottom: "7vh" }}>
+        <Button
+          aria-label={"login"}
+          variant={"contained"}
+          size={"large"}
+          color={"primary"}
+          onClick={onClickLogin}
+        >
+          LOGIN
+        </Button>
+      </Grid>
+      <Grid item>
+        <Typography variant={"body2"} color={"error"}>
+          {loginError}
+        </Typography>
+      </Grid>
     </Grid>
+  );
 };

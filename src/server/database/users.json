@@ -5,14 +5,17 @@
     "key": "$2b$10$ph9/OK1lN/.9KzkeGKGPK.bxOkqJ2b9A2AqH/5iPkS7dmqAnUn.vi",
     "firstName": "Deeksha",
     "lastName": "Sharma",
-    "favorite": ["6cc12b5e-cb5e-11ea-87d0-0242ac130003", "765384e6-cb5e-11ea-87d0-0242ac130003"],
+    "favorite": [
+      "6cc12b5e-cb5e-11ea-87d0-0242ac130003",
+      "765384e6-cb5e-11ea-87d0-0242ac130003"
+    ],
     "role": "member"
   },
   {
     "id": "677c96e2-cb5e-11ea-87d0-0242ac130003",
-    "firstName": "Amy",
     "username": "zenmade23",
     "key": "$2b$10$ruGV.xw6P0zuPUa0vt694eLO5LwckcxFZ1NfzdzDQKF12E2240vZy",
+    "firstName": "Amy",
     "lastName": "Robinson",
     "favorite": ["722f584a-cb5e-11ea-87d0-0242ac130003"],
     "role": "admin"

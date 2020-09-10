@@ -1,93 +1,110 @@
-const jsonfile = require('jsonfile');
-const users = './database/users.json';
-const inventory = './database/books.json';
-const Constants = require('./constants');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const jsonfile = require("jsonfile");
+const users = "./database/users.json";
+const inventory = "./database/books.json";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const Constants = require("./constants");
 
-
-getUserByUsername = async function getUserDetails(userName) {
+var getUserByUsername = (exports.getUserByUsername = async function (username) {
+  try {
     const allUsers = await jsonfile.readFile(users);
-    const filteredUserArray = allUsers.filter(user => (user.username === userName));
+    const filteredUserArray = allUsers.filter(
+      (user) => user.username === username
+    );
     return filteredUserArray.length === 0 ? {} : filteredUserArray[0];
-};
+  } catch (err) {
+    console.log("Error reading users: ", err.message);
+  }
+});
 
-const generateToken = (username, role) => {
-    const payload = {data: username};
-    const options = {
-        algorithm: process.env.ALGORITHM,
-        expiresIn: process.env.EXPIRY,
-        issuer: process.env.ISSUER,
-        audience: role === "admin" ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
-        subject: username
-    };
-    return jwt.sign(payload, process.env.SECRET, options);
-};
+exports.isEmptyObject = (object) => Object.entries(object).length === 0;
 
-const getUsernameFromToken = (token) => jwt.decode(token)['sub'];
-
-exports.getFavoriteBooksForUser = async function (token) {
-    const username = getUsernameFromToken(token);
-    const user = await getUserByUsername(username);
-    const favoriteBookIds = user['favorite'];
-    const allBooks = await jsonfile.readFile(inventory);
-    const favoriteBooks = [];
-    favoriteBookIds.map(id => favoriteBooks.push(allBooks.filter(book => id === book.id)[0]));
-    return favoriteBooks;
-};
-
-exports.verifyToken = (req, res, next) => {
-    if (!req.cookies.token) res.status(401).send({message: "Not Authorized to access data"});
-    else {
-        const token = req.cookies.token;
-        jwt.verify(token, process.env.SECRET, function (err, decode) {
-            if (err) res.status(401).send({message: "Please login again! Your session has expired"});
-            else next();
-        })
-    }
-};
-
-exports.isAPIAccessAllowed = (token, apiName) => {
-    const decodedToken = jwt.decode(token);
-    return (decodedToken['aud'].includes(apiName));
-};
-
-
-exports.getAllUsers = async function () {
-    const allUsers = await jsonfile.readFile(users);
-    let updatedUsers = [];
-    allUsers.map(user => {
-        updatedUsers.push({
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role
-        })
-    });
-    return updatedUsers;
+exports.isPasswordCorrect = async function (key, password) {
+  return bcrypt.compare(password, key).then((result) => result);
 };
 
 exports.getAllBooks = async function () {
+  try {
     return await jsonfile.readFile(inventory);
+  } catch (err) {
+    console.log("Error reading books: ", err);
+  }
+};
+
+exports.getAllUsers = async function () {
+  try {
+    const allUsers = await jsonfile.readFile(users);
+    let updatedUsers = [];
+    allUsers.forEach((user) => {
+      updatedUsers.push({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      });
+    });
+    return updatedUsers;
+  } catch (err) {
+    console.log("Error reading users from datastore ", err.message);
+  }
 };
 
 exports.addBook = async function (book) {
+  try {
     const allBooks = await jsonfile.readFile(inventory);
     allBooks.push(book);
     return await jsonfile.writeFile(inventory, allBooks);
+  } catch (err) {
+    return err;
+  }
 };
 
-exports.constructTokenResponse = async function (token, userName) {
-    let name = userName || getUsernameFromToken(token);
-    const user = await getUserByUsername(name);
-    return  generateToken(user.username, user.role)
+const getUsernameFromToken = (token) => jwt.decode(token)["sub"];
+
+exports.getAudienceFromToken = (token) => jwt.decode(token)["aud"];
+
+exports.generateToken = async function (prevToken, userName) {
+  const name = userName || getUsernameFromToken(prevToken);
+  const user = await getUserByUsername(name);
+  const options = {
+    algorithm: process.env.ALGORITHM,
+    expiresIn: process.env.EXPIRY,
+    issuer: process.env.ISSUER,
+    subject: userName || user.username,
+    audience:
+      user.role === "admin"
+        ? Constants.JWT_OPTIONS.ADMIN_AUDIENCE
+        : Constants.JWT_OPTIONS.MEMBER_AUDIENCE,
+  };
+  return jwt.sign({}, process.env.SECRET, options);
 };
 
-exports.isCredentialValid = async function (username, password) {
-    const user = await getUserByUsername(username);
-    if (user) {
-        return bcrypt.compare(password, user.key)
-            .then(result => result)
-    } else return false;
+exports.verifyToken = (req, res, next) => {
+  if (!req.headers.authorization)
+    res.status(401).send({ message: "Not authorized to access data" });
+  else {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token)
+      res.status(401).send({ message: "Not Authorized to access data" });
+    else {
+      jwt.verify(token, process.env.SECRET, function (err) {
+        if (err) {
+          res.status(401).send({ message: "Please login again" });
+        } else next();
+      });
+    }
+  }
 };
 
+exports.getFavoriteBooksForUser = async function (token) {
+  const username = getUsernameFromToken(token);
+  const user = await getUserByUsername(username);
+  const favoriteBookIds = user["favorite"];
+  const favoriteBooks = [];
+  if (favoriteBookIds.length === 0) return favoriteBooks;
+  const allBooks = await jsonfile.readFile(inventory);
+  favoriteBookIds.forEach((id) =>
+    favoriteBooks.push(allBooks.filter((book) => id === book.id)[0])
+  );
+  return favoriteBooks;
+};
