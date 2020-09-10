@@ -113,7 +113,15 @@ kdje89#$%
 ```bash
 zenmade23
 728193kfej**(
-``` 
+```
+
+### How do I start the server?
+Go inside the `server/` directory and run teh command below.
+```bash
+node server.js
+```
+**Note:** Make sure you restart your server each time you checkout a new branch for every module and for 
+every code change in the server side code. 
 
 
 # Git Branches
